@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set libvpx-vp9 Max and Min Bitrate in FFmpeg - libvpx-vp9</title>
+    <meta name="description" content="Controlling the bitrate in VP9 encodes is crucial for meeting bandwidth requirements and maintaining consistent video quality across different playback devices. This guide demonstrates how to establish the maximum and minimum bitrate limits in the libvpx">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/set-libvpx-vp-9-max-and-min-bitrate-in-f-fmpeg">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Set libvpx-vp9 Max and Min Bitrate in FFmpeg - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/set-libvpx-vp-9-max-and-min-bitrate-in-f-fmpeg" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Controlling the bitrate in VP9 encodes is crucial for meeting bandwidth requirements and maintaining consistent video quality across different playback devices. This guide demonstrates how to establish the maximum and minimum bitrate limits in the libvpx" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="set-libvpx-vp9-max-and-min-bitrate-in-ffmpeg">Set libvpx-vp9 Max
+and Min Bitrate in FFmpeg</h1>
+<p>Controlling the bitrate in VP9 encodes is crucial for meeting
+bandwidth requirements and maintaining consistent video quality across
+different playback devices. This guide demonstrates how to establish the
+maximum and minimum bitrate limits in the <code>libvpx-vp9</code>
+encoder using FFmpeg, covering the necessary command-line arguments and
+configuration modes for effective rate control.</p>
+<p>To establish bitrate limits in <code>libvpx-vp9</code>, you must
+define the target, maximum, and minimum bitrates using FFmpeg's standard
+rate control flags. Additionally, you must set a buffer size to tell the
+encoder how often to calculate and enforce these limits.</p>
+<h3 id="the-core-bitrate-parameters">The Core Bitrate Parameters</h3>
+<p>When configuring your FFmpeg command, use the following arguments to
+define your bitrate boundaries:</p>
+<ul>
+<li><strong><code>-b:v</code></strong>: Sets the target average
+bitrate.</li>
+<li><strong><code>-maxrate</code></strong>: Sets the maximum allowed
+bitrate peak.</li>
+<li><strong><code>-minrate</code></strong>: Sets the minimum allowed
+bitrate floor.</li>
+<li><strong><code>-bufsize</code></strong>: Sets the rate control buffer
+size. This determines how much the bitrate can fluctuate. A standard
+rule of thumb is to set <code>-bufsize</code> to several times the
+target bitrate (e.g., double the target) or to match the maximum
+bitrate.</li>
+</ul>
+<h3 id="method-1-constrained-quality-cq-mode">Method 1: Constrained
+Quality (CQ) Mode</h3>
+<p>Constrained Quality mode is the recommended encoding method for most
+VP9 files. It targets a specific quality level (defined by
+<code>-crf</code>) but caps the bitrate to prevent massive spikes during
+complex scenes.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-crf</span> 30 <span class="at">-b:v</span> 2M <span class="at">-maxrate</span> 3M <span class="at">-minrate</span> 1M <span class="at">-bufsize</span> 4M output.webm</span></code></pre></div>
+<p>In this example:</p>
+<ul>
+<li>The encoder attempts to maintain a quality level of CRF 30.</li>
+<li>The average bitrate target is set to 2 Mbps (<code>2M</code>).</li>
+<li>The bitrate is capped at a maximum of 3 Mbps (<code>3M</code>).</li>
+<li>The bitrate will not drop below 1 Mbps (<code>1M</code>).</li>
+<li>The buffer size is set to 4 Mbps (<code>4M</code>).</li>
+</ul>
+<h3 id="method-2-strict-variable-bitrate-vbr-mode">Method 2: Strict
+Variable Bitrate (VBR) Mode</h3>
+<p>If you need strict adherence to your bitrate limits without relying
+on a CRF quality target, use a two-pass VBR encode. This is ideal for
+HTTP Live Streaming (HLS) or DASH packaging.</p>
+<p><strong>Pass 1:</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-b:v</span> 2M <span class="at">-maxrate</span> 3M <span class="at">-minrate</span> 1M <span class="at">-bufsize</span> 4M <span class="at">-pass</span> 1 <span class="at">-f</span> null /dev/null</span></code></pre></div>
+<p><strong>Pass 2:</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-b:v</span> 2M <span class="at">-maxrate</span> 3M <span class="at">-minrate</span> 1M <span class="at">-bufsize</span> 4M <span class="at">-pass</span> 2 output.webm</span></code></pre></div>
+<p><em>(Note: On Windows, replace <code>/dev/null</code> in the first
+pass with <code>NUL</code>.)</em></p>
+<h3 id="method-3-constant-bitrate-cbr-mode">Method 3: Constant Bitrate
+(CBR) Mode</h3>
+<p>For live streaming scenarios where bandwidth must remain completely
+flat, you can force the minimum and maximum bitrates to match your
+target bitrate. You must also set the <code>-quality</code> (or
+<code>-deadline</code>) parameter to <code>realtime</code>.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-b:v</span> 2M <span class="at">-maxrate</span> 2M <span class="at">-minrate</span> 2M <span class="at">-bufsize</span> 1M <span class="at">-quality</span> realtime output.webm</span></code></pre></div>
+<p>By forcing <code>-minrate</code>, <code>-maxrate</code>, and
+<code>-b:v</code> to <code>2M</code>, <code>libvpx-vp9</code> is
+constrained to output a strict, constant 2 Mbps stream.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

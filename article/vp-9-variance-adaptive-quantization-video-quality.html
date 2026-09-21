@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP9 Variance Adaptive Quantization Video Quality - libvpx-vp9</title>
+    <meta name="description" content="Setting the variance adaptive quantization (AQ) mode in the libvpx-vp9 encoder significantly enhances video fidelity by dynamically distributing bitrate based on spatial complexity. This article explains how variance AQ analyzes the contrast and texture">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/vp-9-variance-adaptive-quantization-video-quality">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="VP9 Variance Adaptive Quantization Video Quality - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/vp-9-variance-adaptive-quantization-video-quality" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Setting the variance adaptive quantization (AQ) mode in the libvpx-vp9 encoder significantly enhances video fidelity by dynamically distributing bitrate based on spatial complexity. This article explains how variance AQ analyzes the contrast and texture" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="vp9-variance-adaptive-quantization-video-quality">VP9 Variance
+Adaptive Quantization Video Quality</h1>
+<p>Setting the variance adaptive quantization (AQ) mode in the
+libvpx-vp9 encoder significantly enhances video fidelity by dynamically
+distributing bitrate based on spatial complexity. This article explains
+how variance AQ analyzes the contrast and texture within individual
+video frames to reduce compression artifacts in flat areas while
+maintaining efficiency in complex textures, ultimately delivering a
+superior perceptual viewing experience.</p>
+<h3 id="what-is-variance-adaptive-quantization">What is Variance
+Adaptive Quantization?</h3>
+<p>In video compression, quantization is the process of reducing the
+precision of pixel data to save bandwidth. Standard encoders apply a
+uniform quantization parameter (QP) across an entire frame. However,
+this uniform approach is highly inefficient because it ignores how the
+human eye perceives detail.</p>
+<p>Variance Adaptive Quantization (specifically activated in libvpx-vp9
+using the <code>-aq-mode 1</code> flag) solves this by analyzing the
+"variance" (or spatial complexity) of local blocks within a frame. It
+then dynamically adjusts the QP for each block based on its visual
+characteristics.</p>
+<h3 id="exploiting-the-human-visual-system">Exploiting the Human Visual
+System</h3>
+<p>The human eye is highly sensitive to compression artifacts in flat,
+smooth, or low-texture regions, such as clear skies, solid walls, or
+dark gradients. In these areas, even minor compression errors manifest
+as distracting blockiness or color banding. Conversely, the human eye is
+poor at detecting compression artifacts in highly textured or busy
+areas, such as foliage, water ripples, or gravel, because the visual
+complexity masks the loss of detail.</p>
+<p>Variance AQ exploits this phenomenon of visual masking through two
+primary actions:</p>
+<ul>
+<li><strong>In Low-Variance (Flat) Areas:</strong> The encoder lowers
+the quantization parameter. This allocates more bitrate to smooth
+gradients and flat surfaces, eliminating banding and blocking artifacts
+where they are most noticeable.</li>
+<li><strong>In High-Variance (Textured) Areas:</strong> The encoder
+increases the quantization parameter. This compresses complex textures
+more aggressively, saving valuable bitrate without causing a perceptible
+loss in quality to the human viewer.</li>
+</ul>
+<h3 id="improving-perceptual-fidelity-over-metrics">Improving Perceptual
+Fidelity Over Metrics</h3>
+<p>By shifting bits away from busy textures and reinvesting them into
+flat gradients, variance AQ drastically improves the subjective, or
+perceptual, quality of the video.</p>
+<p>While objective metrics like Peak Signal-to-Noise Ratio (PSNR) may
+occasionally show slightly lower scores because high-frequency details
+are compressed more heavily, advanced perceptual metrics like VMAF
+(Video Multi-Method Assessment Fusion) and human evaluations
+consistently show a massive improvement. The resulting video looks
+sharper, cleaner, and free of the muddy artifacts that typically plague
+flat backgrounds in low-bitrate streams.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

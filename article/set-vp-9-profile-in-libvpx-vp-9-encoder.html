@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set VP9 Profile in libvpx-vp9 Encoder - libvpx-vp9</title>
+    <meta name="description" content="This article explains how to explicitly define the VP9 profile when initializing the libvpx-vp9 encoder. You will learn how to target specific profiles using both FFmpeg command-line flags and the native libvpx C API, ensuring your output video matches y">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/set-vp-9-profile-in-libvpx-vp-9-encoder">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Set VP9 Profile in libvpx-vp9 Encoder - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/set-vp-9-profile-in-libvpx-vp-9-encoder" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains how to explicitly define the VP9 profile when initializing the libvpx-vp9 encoder. You will learn how to target specific profiles using both FFmpeg command-line flags and the native libvpx C API, ensuring your output video matches y" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="set-vp9-profile-in-libvpx-vp9-encoder">Set VP9 Profile in
+libvpx-vp9 Encoder</h1>
+<p>This article explains how to explicitly define the VP9 profile when
+initializing the <code>libvpx-vp9</code> encoder. You will learn how to
+target specific profiles using both FFmpeg command-line flags and the
+native <code>libvpx</code> C API, ensuring your output video matches
+your precise color depth and chroma subsampling requirements.</p>
+<h2 id="vp9-profiles-overview">VP9 Profiles Overview</h2>
+<p>The VP9 codec supports four profiles, each defining different bit
+depths and chroma subsampling configurations:</p>
+<ul>
+<li><strong>Profile 0:</strong> 8-bit color depth, 4:2:0 chroma
+subsampling (most widely compatible).</li>
+<li><strong>Profile 1:</strong> 8-bit color depth, 4:2:2, 4:4:0, or
+4:4:4 chroma subsampling.</li>
+<li><strong>Profile 2:</strong> 10-bit or 12-bit color depth, 4:2:0
+chroma subsampling.</li>
+<li><strong>Profile 3:</strong> 10-bit or 12-bit color depth, 4:2:2,
+4:4:0, or 4:4:4 chroma subsampling.</li>
+</ul>
+<hr />
+<h2 id="method-1-using-the-ffmpeg-command-line">Method 1: Using the
+FFmpeg Command Line</h2>
+<p>When using FFmpeg, the <code>libvpx-vp9</code> encoder automatically
+selects a profile based on the input pixel format. However, you can
+explicitly force a profile using the <code>-profile:v</code> flag.</p>
+<h3 id="command-example">Command Example</h3>
+<p>To encode a video explicitly using <strong>Profile 2</strong> (for
+10-bit video):</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-profile:v</span> 2 <span class="at">-pix_fmt</span> yuv420p10le output.webm</span></code></pre></div>
+<h3 id="important-considerations">Important Considerations</h3>
+<ul>
+<li><strong>Pixel Format Alignment:</strong> The pixel format
+(<code>-pix_fmt</code>) must match the profile's capabilities. If you
+set <code>-profile:v 2</code> but pass an 8-bit pixel format (like
+<code>yuv420p</code>), the encoder initialization will fail.</li>
+<li><strong>Profile 0 (Standard 8-bit):</strong>
+<code>-profile:v 0</code> paired with
+<code>-pix_fmt yuv420p</code>.</li>
+<li><strong>Profile 2 (Standard 10-bit):</strong>
+<code>-profile:v 2</code> paired with
+<code>-pix_fmt yuv420p10le</code>.</li>
+</ul>
+<hr />
+<h2 id="method-2-using-the-native-libvpx-c-api">Method 2: Using the
+Native libvpx C API</h2>
+<p>If you are developing an application directly with the
+<code>libvpx</code> library, you configure the encoder profile by
+modifying the <code>vpx_codec_enc_cfg_t</code> configuration structure
+before initialization.</p>
+<h3 id="step-by-step-implementation">Step-by-Step Implementation</h3>
+<ol type="1">
+<li><strong>Define the Configuration Structure:</strong> Instantiate the
+encoder configuration structure.</li>
+<li><strong>Set the Profile:</strong> Assign the profile integer (0, 1,
+2, or 3) to the <code>g_profile</code> member variable.</li>
+<li><strong>Initialize the Encoder:</strong> Pass the configuration to
+<code>vpx_codec_enc_init</code>.</li>
+</ol>
+<h3 id="code-example">Code Example</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;vpx/vpx_encoder.h&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;vpx/vp8cx.h&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="dt">void</span> initialize_vp9_encoder<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    vpx_codec_ctx_t codec<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    vpx_codec_enc_cfg_t cfg<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    vpx_codec_iface_t <span class="op">*</span>interface <span class="op">=</span> vpx_codec_vp9_cx<span class="op">();</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Populate configuration with default values</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    vpx_codec_enc_config_default<span class="op">(</span>interface<span class="op">,</span> <span class="op">&amp;</span>cfg<span class="op">,</span> <span class="dv">0</span><span class="op">);</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Explicitly define the VP9 profile</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Use 0 for Profile 0, 1 for Profile 1, 2 for Profile 2, 3 for Profile 3</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    cfg<span class="op">.</span>g_profile <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Set other configuration properties to match the profile requirements</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    cfg<span class="op">.</span>g_w <span class="op">=</span> <span class="dv">1920</span><span class="op">;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    cfg<span class="op">.</span>g_h <span class="op">=</span> <span class="dv">1080</span><span class="op">;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    cfg<span class="op">.</span>g_bit_depth <span class="op">=</span> VPX_BITS_10<span class="op">;</span> <span class="co">// Must align with Profile 2 (10-bit)</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    cfg<span class="op">.</span>g_input_bit_depth <span class="op">=</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Initialize the encoder context</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    vpx_codec_err_t res <span class="op">=</span> vpx_codec_enc_init<span class="op">(&amp;</span>codec<span class="op">,</span> interface<span class="op">,</span> <span class="op">&amp;</span>cfg<span class="op">,</span> VPX_CODEC_USE_HIGHBITDEPTH<span class="op">);</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>res <span class="op">!=</span> VPX_CODEC_OK<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Handle initialization error</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

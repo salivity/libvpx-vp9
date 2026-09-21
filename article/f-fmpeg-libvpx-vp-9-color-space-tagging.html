@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFmpeg libvpx-vp9 Color Space Tagging - libvpx-vp9</title>
+    <meta name="description" content="When encoding video to VP9 using the libvpx-vp9 encoder in FFmpeg, managing color space tagging is crucial for ensuring accurate color reproduction across different media players and web browsers. This article explains how FFmpeg processes color metadata">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/f-fmpeg-libvpx-vp-9-color-space-tagging">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="FFmpeg libvpx-vp9 Color Space Tagging - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/f-fmpeg-libvpx-vp-9-color-space-tagging" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="When encoding video to VP9 using the libvpx-vp9 encoder in FFmpeg, managing color space tagging is crucial for ensuring accurate color reproduction across different media players and web browsers. This article explains how FFmpeg processes color metadata" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="ffmpeg-libvpx-vp9-color-space-tagging">FFmpeg libvpx-vp9 Color
+Space Tagging</h1>
+<p>When encoding video to VP9 using the <code>libvpx-vp9</code> encoder
+in FFmpeg, managing color space tagging is crucial for ensuring accurate
+color reproduction across different media players and web browsers. This
+article explains how FFmpeg processes color metadata, the specific flags
+required to define color space parameters during the encoding process,
+and how to apply these settings for both Standard Dynamic Range (SDR)
+and High Dynamic Range (HDR) workflows.</p>
+<h2 id="how-ffmpeg-handles-vp9-color-metadata">How FFmpeg Handles VP9
+Color Metadata</h2>
+<p>By default, FFmpeg does not automatically write color space metadata
+into the VP9 bitstream unless it is explicitly defined in the command
+line or successfully passed through from a strictly defined source. VP9
+stores color description parameters in both the container level (such as
+WebM or MKV) and the coded bitstream level.</p>
+<p>If these tags are missing, players like VLC, Chrome, or YouTube will
+fall back to default assumptions (usually BT.601 for SD and BT.709 for
+HD), which can cause noticeable color shifts, such as washed-out colors
+or incorrect gamma.</p>
+<p>To guarantee accurate color rendering, you must explicitly define
+three core parameters:</p>
+<ol type="1">
+<li><strong>Color Primaries (<code>-color_primaries</code>):</strong>
+Defines the color gamut (e.g., BT.709, BT.2020).</li>
+<li><strong>Transfer Characteristics (<code>-color_trc</code>):</strong>
+Defines the opto-electronic transfer function (e.g., BT.709, SMPTE
+2084/PQ, ARIB STD-B67/HLG).</li>
+<li><strong>Color Space Matrix (<code>-colorspace</code>):</strong>
+Defines the matrix coefficients used to derive luma and chroma signals
+from red, green, and blue primaries (e.g., BT.709, BT.2020 non-constant
+luminance).</li>
+</ol>
+<hr />
+<h2 id="tagging-sdr-video-bt709">Tagging SDR Video (BT.709)</h2>
+<p>For standard high-definition video, you should tag the output using
+the BT.709 color space.</p>
+<p>To encode an 8-bit SDR video with proper BT.709 tagging, use the
+following FFmpeg command:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-pix_fmt</span> yuv420p <span class="at">-colorspace</span> bt709 <span class="at">-color_primaries</span> bt709 <span class="at">-color_trc</span> bt709 output.webm</span></code></pre></div>
+<ul>
+<li><strong><code>-pix_fmt yuv420p</code></strong>: Sets the pixel
+format to standard 8-bit YUV 4:2:0.</li>
+<li><strong><code>-colorspace bt709</code></strong>: Sets the matrix
+coefficients to BT.709.</li>
+<li><strong><code>-color_primaries bt709</code></strong>: Sets the color
+primaries to BT.709.</li>
+<li><strong><code>-color_trc bt709</code></strong>: Sets the transfer
+characteristics to BT.709.</li>
+</ul>
+<hr />
+<h2 id="tagging-hdr-video-bt2020--pqhdr10">Tagging HDR Video (BT.2020
+&amp; PQ/HDR10)</h2>
+<p>Encoding HDR video requires 10-bit depth, which corresponds to VP9
+Profile 2. You must specify the 10-bit pixel format and use the BT.2020
+color space along with the appropriate transfer function (typically
+SMPTE 2084 for HDR10).</p>
+<p>To encode an HDR10 video with proper tagging, use this command:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-pix_fmt</span> yuv420p10le <span class="at">-profile:v</span> 2 <span class="at">-colorspace</span> bt2020nc <span class="at">-color_primaries</span> bt2020 <span class="at">-color_trc</span> smpte2084 output.webm</span></code></pre></div>
+<ul>
+<li><strong><code>-pix_fmt yuv420p10le</code></strong>: Selects 10-bit
+YUV 4:2:0.</li>
+<li><strong><code>-profile:v 2</code></strong>: Forces VP9 Profile 2,
+which is required for 10-bit and 12-bit color depths.</li>
+<li><strong><code>-colorspace bt2020nc</code></strong>: Sets the matrix
+coefficients to BT.2020 non-constant luminance.</li>
+<li><strong><code>-color_primaries bt2020</code></strong>: Sets the
+color primaries to BT.2020.</li>
+<li><strong><code>-color_trc smpte2084</code></strong>: Sets the
+transfer function to SMPTE ST 2084 (PQ curve used for HDR10).</li>
+</ul>
+<hr />
+<h2 id="verifying-color-space-tags">Verifying Color Space Tags</h2>
+<p>After rendering, you can verify that the color space tags were
+successfully embedded into your VP9 file using <code>ffprobe</code>. Run
+the following command:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffprobe</span> <span class="at">-v</span> error <span class="at">-select_streams</span> v:0 <span class="at">-show_entries</span> stream=color_space,color_primaries,color_transfer,color_range <span class="at">-of</span> default=noprint_wrappers=1 output.webm</span></code></pre></div>
+<p>The output should display the exact parameters you specified during
+encoding, confirming that browsers and media players will read and
+display the colors correctly:</p>
+<pre class="text"><code>color_range=tv
+color_space=bt709
+color_primaries=bt709
+color_transfer=bt709</code></pre></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

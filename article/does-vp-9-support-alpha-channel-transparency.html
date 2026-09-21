@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Does VP9 Support Alpha Channel Transparency? - libvpx-vp9</title>
+    <meta name="description" content="This article explains whether the libvpx-vp9 encoder supports alpha channel transparency for video encoding. It provides a direct answer to this compatibility question, explains how the transparency mechanism works in VP9, and provides the exact FFmpeg c">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/does-vp-9-support-alpha-channel-transparency">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Does VP9 Support Alpha Channel Transparency? - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/does-vp-9-support-alpha-channel-transparency" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains whether the libvpx-vp9 encoder supports alpha channel transparency for video encoding. It provides a direct answer to this compatibility question, explains how the transparency mechanism works in VP9, and provides the exact FFmpeg c" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="does-vp9-support-alpha-channel-transparency">Does VP9 Support
+Alpha Channel Transparency?</h1>
+<p>This article explains whether the <code>libvpx-vp9</code> encoder
+supports alpha channel transparency for video encoding. It provides a
+direct answer to this compatibility question, explains how the
+transparency mechanism works in VP9, and provides the exact FFmpeg
+command needed to encode transparent WebM videos.</p>
+<p>Yes, the <code>libvpx-vp9</code> encoder fully supports encoding
+videos with an alpha channel for transparency. This capability makes VP9
+an excellent, highly-compressed alternative to older transparent formats
+like QuickTime Animation or ProRes 4444, especially for web delivery
+where file size and bandwidth are critical.</p>
+<h3 id="how-vp9-handles-alpha-channels">How VP9 Handles Alpha
+Channels</h3>
+<p>VP9 achieves transparency by encoding the alpha channel as an
+auxiliary stream alongside the primary color stream. The container
+format used for this is typically WebM.</p>
+<p>When a browser or media player renders a VP9 WebM video with an alpha
+channel, it decodes both the YUV color data and the auxiliary alpha
+data, merging them on the fly to display the transparent background.</p>
+<h3 id="how-to-encode-vp9-with-alpha-using-ffmpeg">How to Encode VP9
+with Alpha Using FFmpeg</h3>
+<p>To successfully encode a transparent video using
+<code>libvpx-vp9</code> in FFmpeg, you must specify a pixel format that
+includes an alpha channel. The standard pixel format for this is
+<code>yuva420p</code>.</p>
+<p>Here is the standard FFmpeg command to convert a transparent source
+video (such as a ProRes 4444 MOV file) into a transparent VP9 WebM:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mov <span class="at">-c:v</span> libvpx-vp9 <span class="at">-pix_fmt</span> yuva420p output.webm</span></code></pre></div>
+<h3 id="key-considerations">Key Considerations</h3>
+<ul>
+<li><strong>Browser Compatibility:</strong> Transparent VP9 videos in
+WebM containers are widely supported in modern web browsers, including
+Google Chrome, Mozilla Firefox, and Microsoft Edge. Apple's Safari also
+supports WebM playback on modern versions of macOS and iOS.</li>
+<li><strong>Performance:</strong> Encoding with <code>libvpx-vp9</code>
+is CPU-intensive. You can speed up the process by using the
+<code>-speed</code> or <code>-cpu-used</code> flags in your FFmpeg
+command (values from 0 to 5, where 5 is the fastest but offers slightly
+lower compression efficiency).</li>
+<li><strong>Color Space:</strong> Ensure your source video actually
+contains an alpha channel before encoding, as converting a standard
+24-bit RGB or YUV video will not retroactively create transparency.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

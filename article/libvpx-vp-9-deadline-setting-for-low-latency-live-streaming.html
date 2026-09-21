@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libvpx-VP9 Deadline Setting for Low Latency Live Streaming - libvpx-vp9</title>
+    <meta name="description" content="To achieve ultra-low latency in live streaming using the libvpx-vp9 codec, configuring the correct encoder deadline is essential. This article explains why the realtime deadline setting is the definitive choice for minimizing encoding delay, how it compa">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/libvpx-vp-9-deadline-setting-for-low-latency-live-streaming">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Libvpx-VP9 Deadline Setting for Low Latency Live Streaming - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/libvpx-vp-9-deadline-setting-for-low-latency-live-streaming" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="To achieve ultra-low latency in live streaming using the libvpx-vp9 codec, configuring the correct encoder deadline is essential. This article explains why the realtime deadline setting is the definitive choice for minimizing encoding delay, how it compa" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1
+id="libvpx-vp9-deadline-setting-for-low-latency-live-streaming">Libvpx-VP9
+Deadline Setting for Low Latency Live Streaming</h1>
+<p>To achieve ultra-low latency in live streaming using the
+<code>libvpx-vp9</code> codec, configuring the correct encoder deadline
+is essential. This article explains why the <code>realtime</code>
+deadline setting is the definitive choice for minimizing encoding delay,
+how it compares to other modes, and the optimal FFmpeg parameters to
+pair with it for high-performance live broadcasts.</p>
+<h2 id="the-optimal-deadline-setting-realtime">The Optimal Deadline
+Setting: <code>realtime</code></h2>
+<p>When streaming live video using the <code>libvpx-vp9</code> encoder
+in FFmpeg, you must set the <code>-deadline</code> parameter to
+<strong><code>realtime</code></strong> (also configurable as
+<code>-quality realtime</code> in modern versions of FFmpeg).</p>
+<p>The <code>libvpx-vp9</code> library offers three primary deadline
+modes that dictate the trade-off between encoding speed and compression
+efficiency:</p>
+<ul>
+<li><strong><code>best</code></strong>: Prioritizes quality and
+compression ratio, resulting in extremely slow encoding speeds. This is
+unsuitable for live streaming.</li>
+<li><strong><code>good</code></strong>: The default mode, balanced for
+standard file-based transcoding.</li>
+<li><strong><code>realtime</code></strong>: Forcefully prioritizes
+processing speed to ensure the encoder processes frames at or faster
+than the input frame rate, which is mandatory to prevent latency
+build-ups during a live stream.</li>
+</ul>
+<h2 id="critical-companion-settings-for-low-latency">Critical Companion
+Settings for Low Latency</h2>
+<p>Simply setting <code>-deadline realtime</code> is often not enough to
+achieve true low-latency VP9 streaming. You must pair it with the
+following configuration options in your FFmpeg command:</p>
+<h3 id="1-the--cpu-used-parameter">1. The <code>-cpu-used</code>
+Parameter</h3>
+<p>In <code>realtime</code> mode, the <code>-cpu-used</code> parameter
+acts as a speed modifier. It accepts integer values from <code>0</code>
+to <code>8</code> (and up to <code>9</code> or <code>11</code> on newer
+library versions).</p>
+<ul>
+<li>For live streaming, use a value between <strong><code>5</code> and
+<code>8</code></strong>.</li>
+<li>Higher numbers (e.g., <code>-cpu-used 8</code>) significantly
+increase encoding speed and lower latency at the cost of a minor
+reduction in compression efficiency.</li>
+</ul>
+<h3 id="2-threading-options">2. Threading Options</h3>
+<p>Enable multi-threading to distribute the encoding workload across
+your CPU cores. Use the following flags:</p>
+<ul>
+<li><code>-tile-columns 2</code> or <code>3</code> (enables
+multi-threaded tile encoding)</li>
+<li><code>-frame-parallel 1</code> (allows parallel frame
+processing)</li>
+<li><code>-threads [number of CPU threads]</code></li>
+</ul>
+<h2 id="recommended-ffmpeg-command-example">Recommended FFmpeg Command
+Example</h2>
+<p>To stream live with VP9 at minimum latency, your FFmpeg command
+should look similar to this:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input_stream <span class="at">-c:v</span> libvpx-vp9 <span class="at">-deadline</span> realtime <span class="at">-cpu-used</span> 8 <span class="at">-tile-columns</span> 2 <span class="at">-frame-parallel</span> 1 <span class="at">-threads</span> 8 <span class="at">-f</span> flv rtmp://live-endpoint</span></code></pre></div>
+<p>By combining <code>-deadline realtime</code> with an aggressive
+<code>-cpu-used</code> value, you ensure that the VP9 encoder operates
+fast enough to maintain a continuous, low-latency live broadcast.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

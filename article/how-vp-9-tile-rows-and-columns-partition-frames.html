@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How VP9 Tile Rows and Columns Partition Frames - libvpx-vp9</title>
+    <meta name="description" content="In the libvpx-vp9 video encoder, partitioning a frame into tile rows and tile columns is a key mechanism for enabling parallel encoding and decoding. By dividing a video frame into a grid of independent rectangular regions called tiles, VP9 allows multi-">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/how-vp-9-tile-rows-and-columns-partition-frames">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How VP9 Tile Rows and Columns Partition Frames - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/how-vp-9-tile-rows-and-columns-partition-frames" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In the libvpx-vp9 video encoder, partitioning a frame into tile rows and tile columns is a key mechanism for enabling parallel encoding and decoding. By dividing a video frame into a grid of independent rectangular regions called tiles, VP9 allows multi-" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-vp9-tile-rows-and-columns-partition-frames">How VP9 Tile
+Rows and Columns Partition Frames</h1>
+<p>In the libvpx-vp9 video encoder, partitioning a frame into tile rows
+and tile columns is a key mechanism for enabling parallel encoding and
+decoding. By dividing a video frame into a grid of independent
+rectangular regions called tiles, VP9 allows multi-threaded processors
+to work on different parts of the frame simultaneously. This article
+explains how tile rows and columns function together, how they are
+configured, and their impact on encoding speed and compression
+efficiency.</p>
+<p>VP9 partitions frames into a two-dimensional grid using horizontal
+boundaries (tile rows) and vertical boundaries (tile columns). Unlike
+older video codecs that only allow horizontal slicing, VP9’s grid-based
+approach allows for highly scalable parallel processing. Each
+intersection of a tile row and a tile column forms a distinct,
+rectangular "tile" that can be processed independently.</p>
+<p>To configure this partitioning in libvpx, developers use the
+<code>--tile-columns</code> and <code>--tile-rows</code> parameters.
+Both parameters are defined in log2 units. For example:</p>
+<ul>
+<li>Setting <code>--tile-columns=2</code> creates <span
+class="math inline">\(2^2\)</span> (four) vertical columns.</li>
+<li>Setting <code>--tile-rows=1</code> creates <span
+class="math inline">\(2^1\)</span> (two) horizontal rows.</li>
+</ul>
+<p>Combined, these settings partition the frame into a grid of eight
+individual tiles (<span class="math inline">\(4 \text{ columns} \times 2
+\text{ rows}\)</span>). The encoder restricts the maximum number of tile
+columns to 6 (64 columns) and tile rows to 2 (4 rows).</p>
+<p>The primary purpose of partitioning frames this way is to facilitate
+multi-threading. During encoding or decoding, a separate CPU thread can
+be assigned to process each tile. Because the tiles are processed in
+parallel, this significantly reduces processing latency, which is
+critical for real-time communication and high-resolution video playback
+(such as 4K or 8K).</p>
+<p>However, this parallel processing capability comes with a trade-off
+in compression efficiency. To allow independent processing, VP9
+restricts spatial prediction across tile boundaries. Pixels in one tile
+cannot be used to predict pixels in adjacent tiles, and the entropy
+encoder's probability models are reset at the start of each vertical
+tile boundary. This limitation reduces the encoder's ability to
+eliminate spatial redundancy, resulting in a slightly higher file size
+or lower visual quality at a given bitrate compared to a single-tile
+configuration.</p>
+<p>To balance speed and quality, the number of tile rows and columns
+should be matched to the number of available CPU threads and the
+resolution of the video. While more tiles enable higher parallelism,
+over-partitioning a low-resolution video will unnecessarily degrade
+compression efficiency without yielding significant performance
+gains.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

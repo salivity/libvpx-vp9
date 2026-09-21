@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Does libvpx-vp9 Support GPU Acceleration? - libvpx-vp9</title>
+    <meta name="description" content="This article explains whether the standard libvpx-vp9 library can utilize GPU hardware acceleration for video encoding. It covers the technical limitations of the library, how it utilizes system resources, and the alternative hardware-accelerated encoder">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/does-libvpx-vp-9-support-gpu-acceleration">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Does libvpx-vp9 Support GPU Acceleration? - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/does-libvpx-vp-9-support-gpu-acceleration" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains whether the standard libvpx-vp9 library can utilize GPU hardware acceleration for video encoding. It covers the technical limitations of the library, how it utilizes system resources, and the alternative hardware-accelerated encoder" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="does-libvpx-vp9-support-gpu-acceleration">Does libvpx-vp9
+Support GPU Acceleration?</h1>
+<p>This article explains whether the standard <code>libvpx-vp9</code>
+library can utilize GPU hardware acceleration for video encoding. It
+covers the technical limitations of the library, how it utilizes system
+resources, and the alternative hardware-accelerated encoders available
+if you need to speed up your VP9 encoding workflows.</p>
+<p>The standard <code>libvpx-vp9</code> library <strong>cannot</strong>
+take advantage of GPU acceleration for the encoding process. It is a
+software-based encoder developed by the WebM Project (backed by Google)
+that runs strictly on the CPU. It is designed to maximize video quality
+and compression efficiency through highly complex mathematical
+algorithms, which are optimized for CPU architecture rather than the
+parallel processing nature of GPUs.</p>
+<p>While <code>libvpx-vp9</code> does not support GPUs, it is highly
+optimized for modern CPUs. It utilizes multi-threading and
+processor-specific instruction sets—such as AVX2 and AVX-512—to speed up
+the encoding process.</p>
+<h3 id="how-to-speed-up-libvpx-vp9-on-cpu">How to Speed Up libvpx-vp9 on
+CPU</h3>
+<p>If you must use the standard <code>libvpx-vp9</code> library but want
+to reduce encoding times, you can optimize your CPU utilization using
+specific encoder settings (often configured via tools like FFmpeg):</p>
+<ul>
+<li><strong>Thread Count (<code>-threads</code>):</strong> Ensure the
+encoder is utilizing multiple CPU cores.</li>
+<li><strong>Speed/Quality Trade-off (<code>-cpu-used</code>):</strong>
+Adjust this parameter (usually on a scale from 0 to 8). Higher numbers
+(e.g., 4 to 8) significantly speed up encoding at the expense of slight
+quality loss or larger file sizes.</li>
+<li><strong>Row-based Multi-threading (<code>-row-mt 1</code>):</strong>
+Enabling this setting allows the encoder to process rows of video frames
+in parallel, greatly improving CPU utilization on multi-core
+systems.</li>
+</ul>
+<h3 id="alternatives-for-gpu-accelerated-vp9-encoding">Alternatives for
+GPU-Accelerated VP9 Encoding</h3>
+<p>If your workflow requires GPU hardware acceleration to achieve
+real-time or faster-than-real-time VP9 encoding, you cannot use
+<code>libvpx-vp9</code>. Instead, you must use hardware-specific
+encoders that interface directly with your graphics card's dedicated
+video encoding ASIC.</p>
+<p>Common GPU-accelerated alternatives for VP9 encoding include:</p>
+<ul>
+<li><strong>Intel Quick Sync Video (QSV):</strong> Available on Intel
+CPUs with integrated graphics (Ice Lake architectures and newer, as well
+as Intel Arc GPUs). In tools like FFmpeg, this is accessed via the
+<code>vp9_qsv</code> encoder.</li>
+<li><strong>VAAPI (Video Acceleration API):</strong> A Linux-based API
+that supports hardware-accelerated VP9 encoding on compatible Intel and
+AMD graphics cards, accessed via the <code>vp9_vaapi</code>
+encoder.</li>
+<li><strong>AMD AMF (Advanced Media Framework):</strong> Supports VP9
+hardware encoding on select modern AMD Radeon graphics cards.</li>
+</ul>
+<p><em>Note: NVIDIA's hardware encoder (NVENC) does not support VP9
+hardware encoding; it only supports VP9 hardware decoding. NVIDIA
+bypassed VP9 encoding support in favor of AV1 hardware encoding on newer
+GPU generations.</em></p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

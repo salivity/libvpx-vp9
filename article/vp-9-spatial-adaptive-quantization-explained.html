@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP9 Spatial Adaptive Quantization Explained - libvpx-vp9</title>
+    <meta name="description" content="Spatial adaptive quantization (AQ) in the libvpx-vp9 library is a sophisticated encoding technique designed to optimize video quality by dynamically adjusting compression levels across different regions of a single video frame. Instead of applying a unif">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/vp-9-spatial-adaptive-quantization-explained">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="VP9 Spatial Adaptive Quantization Explained - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/vp-9-spatial-adaptive-quantization-explained" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Spatial adaptive quantization (AQ) in the libvpx-vp9 library is a sophisticated encoding technique designed to optimize video quality by dynamically adjusting compression levels across different regions of a single video frame. Instead of applying a unif" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="vp9-spatial-adaptive-quantization-explained">VP9 Spatial
+Adaptive Quantization Explained</h1>
+<p>Spatial adaptive quantization (AQ) in the libvpx-vp9 library is a
+sophisticated encoding technique designed to optimize video quality by
+dynamically adjusting compression levels across different regions of a
+single video frame. Instead of applying a uniform quantization parameter
+(QP) to an entire frame, spatial AQ analyzes the visual complexity of
+individual blocks and redistributes bits to where they are most needed.
+This article explains the purpose, mechanics, and benefits of spatial
+adaptive quantization within the VP9 video codec.</p>
+<h2 id="the-core-purpose-of-spatial-adaptive-quantization">The Core
+Purpose of Spatial Adaptive Quantization</h2>
+<p>The primary purpose of spatial adaptive quantization is to align
+video compression with the characteristics of the Human Visual System
+(HVS). Human eyes do not perceive compression artifacts uniformly; we
+are highly sensitive to distortions in flat, smooth areas (such as a
+clear sky or a solid wall) but much less sensitive to loss of detail in
+highly textured, complex areas (such as grass, gravel, or water
+ripples).</p>
+<p>Spatial AQ exploits this psychological phenomenon by:</p>
+<ul>
+<li><strong>Reducing compression in smooth areas:</strong> By lowering
+the quantization parameter (QP) in flat regions, the encoder preserves
+gradients and prevents highly noticeable artifacts like color banding
+and blocking.</li>
+<li><strong>Increasing compression in textured areas:</strong> By
+raising the QP in visually complex regions, the encoder saves bits where
+the human eye cannot easily detect the minor loss of fine detail.</li>
+</ul>
+<p>Ultimately, this redistribution of bits improves the subjective,
+perceived quality of the video without increasing the overall file size
+or bitrate.</p>
+<h2 id="how-spatial-aq-works-in-libvpx-vp9">How Spatial AQ Works in
+libvpx-vp9</h2>
+<p>During the encoding process, the libvpx-vp9 library divides a video
+frame into macroblocks. The spatial AQ algorithm performs a spatial
+variance analysis on these blocks to determine their texture
+complexity:</p>
+<ol type="1">
+<li><strong>Variance Estimation:</strong> The encoder calculates the
+variance of pixel values within a block. Low variance indicates a flat,
+smooth surface, while high variance indicates high detail or
+motion.</li>
+<li><strong>QP Modulation:</strong> Based on the variance score, the
+encoder applies a delta-QP (an offset to the frame's base QP) to the
+block.</li>
+<li><strong>Bit Allocation:</strong> Blocks with low variance receive a
+negative delta-QP (higher quality, more bits), while blocks with high
+variance receive a positive delta-QP (lower quality, fewer bits).</li>
+</ol>
+<h2 id="vp9-adaptive-quantization-modes---aq-mode">VP9 Adaptive
+Quantization Modes (<code>--aq-mode</code>)</h2>
+<p>The libvpx-vp9 library exposes this functionality to users through
+the <code>--aq-mode</code> command-line parameter. Users can choose from
+several modes depending on their encoding goals:</p>
+<ul>
+<li><strong>Mode 0 (Disabled):</strong> No adaptive quantization is
+applied. The encoder uses a constant or frame-level QP, which can lead
+to visible banding in gradients.</li>
+<li><strong>Mode 1 (Variance AQ):</strong> The standard spatial AQ mode.
+It directly analyzes spatial variance to distribute bits, making it
+highly effective for standard high-quality offline encodes.</li>
+<li><strong>Mode 2 (Complexity AQ):</strong> This mode adjusts
+quantization based on the complexity of the macroblock relative to the
+rest of the frame, tailoring bit distribution for mixed-content
+videos.</li>
+<li><strong>Mode 3 (Cyclic Refresh):</strong> Designed primarily for
+real-time and interactive streaming (like video conferencing). It
+selectively boosts the quality of static background areas while heavily
+compressing moving areas, optimizing low-latency delivery.</li>
+</ul>
+<p>By utilizing spatial adaptive quantization, the VP9 codec achieves
+superior visual fidelity, ensuring that bandwidth is spent efficiently
+on the parts of the video frame that matter most to the viewer.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

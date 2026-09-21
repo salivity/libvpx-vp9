@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Set VP9 Pixel Format in FFmpeg - libvpx-vp9</title>
+    <meta name="description" content="Specifying the correct output pixel format when encoding video with the libvpx-vp9 encoder in FFmpeg is crucial for achieving the desired compatibility, color depth, and video quality. This article provides a straightforward guide on how to use the -pixf">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/how-to-set-vp-9-pixel-format-in-f-fmpeg">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Set VP9 Pixel Format in FFmpeg - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/how-to-set-vp-9-pixel-format-in-f-fmpeg" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Specifying the correct output pixel format when encoding video with the libvpx-vp9 encoder in FFmpeg is crucial for achieving the desired compatibility, color depth, and video quality. This article provides a straightforward guide on how to use the -pixf" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-set-vp9-pixel-format-in-ffmpeg">How to Set VP9 Pixel
+Format in FFmpeg</h1>
+<p>Specifying the correct output pixel format when encoding video with
+the <code>libvpx-vp9</code> encoder in FFmpeg is crucial for achieving
+the desired compatibility, color depth, and video quality. This article
+provides a straightforward guide on how to use the <code>-pix_fmt</code>
+flag to define your pixel format, details the supported formats for VP9
+(including 8-bit, 10-bit, and 12-bit options), and provides practical
+command-line examples for your encoding workflow.</p>
+<h2 id="using-the--pix_fmt-flag">Using the -pix_fmt Flag</h2>
+<p>To specify the output pixel format in FFmpeg when using the
+<code>libvpx-vp9</code> encoder, you must use the <code>-pix_fmt</code>
+option after defining the video encoder. The basic syntax is:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-pix_fmt</span> <span class="pp">[</span><span class="ss">pixel_format</span><span class="pp">]</span> output.webm</span></code></pre></div>
+<p>Replace <code>[pixel_format]</code> with the specific format required
+for your project.</p>
+<h2 id="supported-vp9-pixel-formats">Supported VP9 Pixel Formats</h2>
+<p>The <code>libvpx-vp9</code> encoder supports several pixel formats
+representing different chroma subsampling methods and color depths:</p>
+<h3 id="standard-8-bit-formats">Standard 8-Bit Formats</h3>
+<ul>
+<li><strong><code>yuv420p</code></strong>: The most common format,
+offering excellent compatibility across web browsers, media players, and
+hardware decoders.</li>
+<li><strong><code>yuv422p</code></strong>: Used for higher quality,
+offering 4:2:2 chroma subsampling.</li>
+<li><strong><code>yuv444p</code></strong>: High-quality 4:4:4 chroma
+subsampling, ideal for screen recordings or graphics where color
+bleeding must be avoided.</li>
+</ul>
+<h3 id="high-bit-depth-formats-10-bit-and-12-bit">High-Bit Depth Formats
+(10-bit and 12-bit)</h3>
+<p>VP9 supports profile 2 (10-bit) and profile 3 (12-bit) encoding,
+which are essential for High Dynamic Range (HDR) content:</p>
+<ul>
+<li><strong><code>yuv420p10le</code></strong>: 10-bit color depth with
+4:2:0 subsampling (highly recommended for HDR web video).</li>
+<li><strong><code>yuv422p10le</code></strong>: 10-bit color depth with
+4:2:2 subsampling.</li>
+<li><strong><code>yuv444p10le</code></strong>: 10-bit color depth with
+4:4:4 subsampling.</li>
+<li><strong><code>yuv420p12le</code> / <code>yuv422p12le</code> /
+<code>yuv444p12le</code></strong>: 12-bit equivalents for maximum color
+precision.</li>
+</ul>
+<hr />
+<h2 id="practical-examples">Practical Examples</h2>
+<h3 id="example-1-standard-8-bit-vp9-for-web-playback">Example 1:
+Standard 8-Bit VP9 for Web Playback</h3>
+<p>To encode a video for maximum compatibility with standard web
+browsers and devices, use the <code>yuv420p</code> pixel format:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-pix_fmt</span> yuv420p output.webm</span></code></pre></div>
+<h3 id="example-2-10-bit-vp9-hdr">Example 2: 10-Bit VP9 (HDR)</h3>
+<p>For HDR workflows or to avoid color banding in gradients, use the
+<code>yuv420p10le</code> pixel format. Note that you may also need to
+specify the <code>-profile:v 2</code> flag to force 10-bit profile
+compatibility:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-pix_fmt</span> yuv420p10le <span class="at">-profile:v</span> 2 output.webm</span></code></pre></div>
+<hr />
+<h2 id="verifying-supported-pixel-formats">Verifying Supported Pixel
+Formats</h2>
+<p>You can verify all pixel formats supported by your local installation
+of the <code>libvpx-vp9</code> encoder by running the following command
+in your terminal:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-h</span> encoder=libvpx-vp9</span></code></pre></div>
+<p>Look for the "Supported pixel formats" section in the output to see
+the exact list of formats your FFmpeg build can encode.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

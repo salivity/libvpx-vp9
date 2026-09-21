@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Does libvpx-vp9 Relate to WebM? - libvpx-vp9</title>
+    <meta name="description" content="This article explains the relationship between the libvpx-vp9 video encoder and the WebM file format. It defines the distinct roles of the VP9 video compression standard, the libvpx library, and the WebM container, demonstrating how they work in tandem t">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/how-does-libvpx-vp-9-relate-to-web-m">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How Does libvpx-vp9 Relate to WebM? - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/how-does-libvpx-vp-9-relate-to-web-m" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains the relationship between the libvpx-vp9 video encoder and the WebM file format. It defines the distinct roles of the VP9 video compression standard, the libvpx library, and the WebM container, demonstrating how they work in tandem t" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-does-libvpx-vp9-relate-to-webm">How Does libvpx-vp9 Relate
+to WebM?</h1>
+<p>This article explains the relationship between the
+<code>libvpx-vp9</code> video encoder and the WebM file format. It
+defines the distinct roles of the VP9 video compression standard, the
+libvpx library, and the WebM container, demonstrating how they work in
+tandem to deliver highly efficient, royalty-free video across the
+internet.</p>
+<h2 id="codec-vs-encoder-vs-container">Codec vs. Encoder vs.
+Container</h2>
+<p>To understand how <code>libvpx-vp9</code> and WebM relate, it is
+essential to first distinguish between three distinct technical
+components: a codec standard, an encoder implementation, and a media
+container.</p>
+<ul>
+<li><strong>VP9</strong> is an open and royalty-free video coding format
+(codec) developed by Google. It is the theoretical blueprint for
+compressing and decompressing video data.</li>
+<li><strong>libvpx</strong> is the official, free software library that
+actually performs the compression. Inside this library,
+<strong><code>libvpx-vp9</code></strong> is the specific encoder
+software used to convert raw video into VP9-compliant data.</li>
+<li><strong>WebM</strong> is a multimedia container format designed for
+the web. It is the "wrapper" (represented by the <code>.webm</code> file
+extension) that holds the video stream, audio stream, and metadata
+together.</li>
+</ul>
+<h2 id="the-direct-relationship">The Direct Relationship</h2>
+<p>The relationship between <code>libvpx-vp9</code> and WebM is one of
+content and container. WebM is the physical box, and the video stream
+compressed by <code>libvpx-vp9</code> is the content placed inside that
+box.</p>
+<p>The WebM format is highly restrictive regarding what types of data it
+can hold. To maintain its goal of being 100% royalty-free and optimized
+for the web, the WebM specification only permits a few specific
+codecs:</p>
+<ul>
+<li><strong>Video:</strong> VP8, VP9, and AV1</li>
+<li><strong>Audio:</strong> Vorbis and Opus</li>
+</ul>
+<p>Because <code>libvpx-vp9</code> is the primary and most widely used
+encoder for generating VP9 video, it is the fundamental tool used to
+create the video streams packaged inside WebM files.</p>
+<h2 id="how-they-work-together-in-practice">How They Work Together in
+Practice</h2>
+<p>When you compress a video for the web, the encoding software (such as
+FFmpeg) uses the <code>libvpx-vp9</code> library to compress the video
+frames. Once compressed, this video stream is paired with an audio
+stream (typically compressed using the Opus encoder) and muxed
+(packaged) into a WebM container.</p>
+<p>A typical command-line instruction to create a WebM file using this
+relationship looks like this:</p>
+<p><code>ffmpeg -i input.mp4 -c:v libvpx-vp9 -c:a libopus output.webm</code></p>
+<p>In this process:</p>
+<ol type="1">
+<li><code>input.mp4</code> is the source file.</li>
+<li><code>-c:v libvpx-vp9</code> tells the software to compress the
+video using the <strong>libvpx-vp9</strong> encoder.</li>
+<li><code>-c:a libopus</code> compresses the audio using the Opus
+encoder.</li>
+<li><code>output.webm</code> packages both resulting streams into the
+<strong>WebM</strong> container.</li>
+</ol>
+<p>Ultimately, <code>libvpx-vp9</code> is the engine that generates the
+highly efficient video data, while WebM is the standardized delivery
+vehicle that allows web browsers and media players to read and play that
+video smoothly.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

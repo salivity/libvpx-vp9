@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFmpeg libvpx-vp9 Logging and Debugging - libvpx-vp9</title>
+    <meta name="description" content="When encoding video using the libvpx-vp9 library in FFmpeg, troubleshooting performance bottlenecks, quality degradation, or encoding failures requires access to detailed encoder metrics. This article provides a direct guide to the logging, verbosity, an">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/f-fmpeg-libvpx-vp-9-logging-and-debugging">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="FFmpeg libvpx-vp9 Logging and Debugging - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/f-fmpeg-libvpx-vp-9-logging-and-debugging" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="When encoding video using the libvpx-vp9 library in FFmpeg, troubleshooting performance bottlenecks, quality degradation, or encoding failures requires access to detailed encoder metrics. This article provides a direct guide to the logging, verbosity, an" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="ffmpeg-libvpx-vp9-logging-and-debugging">FFmpeg libvpx-vp9
+Logging and Debugging</h1>
+<p>When encoding video using the <code>libvpx-vp9</code> library in
+FFmpeg, troubleshooting performance bottlenecks, quality degradation, or
+encoding failures requires access to detailed encoder metrics. This
+article provides a direct guide to the logging, verbosity, and debugging
+options available for <code>libvpx-vp9</code> in FFmpeg, demonstrating
+how to extract encoder-specific diagnostic data during the compression
+process.</p>
+<h2 id="ffmpeg-verbosity-levels-for-libvpx-vp9">FFmpeg Verbosity Levels
+for libvpx-vp9</h2>
+<p>FFmpeg's global <code>-loglevel</code> option controls the verbosity
+of the entire output, including the initialization parameters passed
+directly to the <code>libvpx</code> wrapper.</p>
+<ul>
+<li><strong>Debug Level (<code>-loglevel debug</code>):</strong> This is
+the primary tool for inspecting encoder configuration. It prints the
+exact <code>vpx_codec_enc_cfg_t</code> structure passed to the VP9
+library. You can verify whether your custom settings for threads,
+bitrate, deadline, and CPU-used are being correctly interpreted by the
+encoder.</li>
+<li><strong>Trace Level (<code>-loglevel trace</code>):</strong> This
+level provides granular, packet-by-packet details. It shows frame-type
+decisions (such as Keyframes, Golden Frames, and Alt-Ref frames) as they
+are processed by the encoder pipeline.</li>
+</ul>
+<p>Example command:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-loglevel</span> debug <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-b:v</span> 2M output.webm</span></code></pre></div>
+<h2 id="quality-and-metric-logging">Quality and Metric Logging</h2>
+<p>To debug visual quality issues or rate-control behavior, you can
+force the <code>libvpx-vp9</code> encoder to calculate and print quality
+metrics directly to the console.</p>
+<h3 id="psnr-calculation">PSNR Calculation</h3>
+<p>By enabling the PSNR (Peak Signal-to-Noise Ratio) setting, the
+encoder outputs frame-by-frame and global PSNR values upon
+completion.</p>
+<ul>
+<li><strong>Command Option:</strong> <code>-psnr</code> (set to
+<code>1</code> or <code>true</code>)</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-b:v</span> 2M <span class="at">-psnr</span> 1 output.webm</span></code></pre></div>
+<h3 id="two-pass-statistics-log">Two-Pass Statistics Log</h3>
+<p>When performing two-pass encoding (<code>-pass 1</code> and
+<code>-pass 2</code>), FFmpeg writes a statistics log file (defaulting
+to <code>ffmpeg2pass-0.log</code>). This file contains the
+frame-by-frame complexity data that the encoder uses to budget bits
+during the second pass.</p>
+<ul>
+<li>To change the log prefix or location, use the
+<code>-passlogfile</code> option:</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-b:v</span> 2M <span class="at">-pass</span> 1 <span class="at">-passlogfile</span> my_vp9_stats <span class="at">-f</span> null /dev/null</span></code></pre></div>
+<h2 id="internal-vp9-debugging-parameters">Internal VP9 Debugging
+Parameters</h2>
+<p>The FFmpeg wrapper exposes several advanced private options for
+<code>libvpx-vp9</code> that assist in debugging specific codec
+operations.</p>
+<ul>
+<li><strong><code>-gop-stats-write-out &lt;filename&gt;</code>:</strong>
+Writes Group of Pictures (GOP) statistics to a specified file. This is
+highly useful for debugging scene-cut detection and keyframe
+placement.</li>
+<li><strong><code>-tune-content</code>:</strong> While primarily a
+tuning option (e.g., <code>default</code>, <code>screen</code>,
+<code>film</code>), setting this improperly can lead to unexpected
+encoding behavior. Debugging with different content tunings helps
+isolate spatial/temporal compression issues.</li>
+</ul>
+<h2 id="profiling-performance">Profiling Performance</h2>
+<p>If you are debugging slow encoding speeds or high CPU utilization,
+use FFmpeg's global benchmark options to isolate system bottlenecks:</p>
+<ul>
+<li><strong><code>-benchmark</code>:</strong> Outputs CPU time, system
+time, and maximum virtual memory usage at the end of the encoding
+process.</li>
+<li><strong><code>-benchmark_all</code>:</strong> Provides real-time
+step-by-step performance metrics throughout the entire encode.</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-benchmark</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-b:v</span> 2M output.webm</span></code></pre></div></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

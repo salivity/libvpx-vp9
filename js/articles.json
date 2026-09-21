@@ -1,0 +1,602 @@
+[
+  [
+    100,
+    "How to Enable Lossless VP9 Encoding in FFmpeg",
+    "This article provides a straightforward guide on how to configure the FFmpeg command line to achieve true lossless video encoding using the VP9 codec (libvpx-vp9). You will learn the specific parameters required to activate this mode, disable lossy compr",
+    false
+  ],
+  [
+    99,
+    "Best Practices for VP9 Lossless Video Archiving",
+    "This article outlines the essential best practices for preserving high-quality master video files using the libvpx-vp9 lossless encoder. You will learn the correct FFmpeg command-line parameters, pixel format configurations, and compression settings requ",
+    false
+  ],
+  [
+    98,
+    "Extracting Motion Vectors from libvpx VP9",
+    "Extracting and analyzing motion vector data from a successfully encoded libvpx-vp9 file is essential for tasks like video compression analysis, computer vision, and motion-compensated frame interpolation. This guide provides a straightforward methodology",
+    false
+  ],
+  [
+    97,
+    "VP9 Static Threshold Impact on Motion Estimation",
+    "The static-thresh parameter in the libvpx-vp9 encoder plays a critical role in balancing encoding speed and video quality by controlling motion estimation. This article explains how adjusting this threshold determines which macroblocks are classified as",
+    false
+  ],
+  [
+    96,
+    "Configure libvpx-vp9 Undershoot for Constant Bitrate",
+    "This article explains how to properly configure the undershoot percentage (-undershoot-pct) in the libvpx-vp9 encoder to achieve a stable Constant Bitrate (CBR). You will learn how this parameter interacts with other rate control settings in FFmpeg and t",
+    false
+  ],
+  [
+    95,
+    "Controlling VP9 Bitrate Spikes with Overshoot Percentage",
+    "When encoding video using the libvpx-vp9 library, sudden changes in scene complexity can cause unexpected bitrate spikes that disrupt streaming performance. This article explains how the overshoot-pct parameter acts as a rate control mechanism, allowing",
+    false
+  ],
+  [
+    94,
+    "VP9 Noise Sensitivity Parameter Explained",
+    "This article explains the noise sensitivity parameter in the libvpx-vp9 video encoder, detailing how it functions as a built-in denoiser and how adjusting its value affects the final video's quality, bitrate, and compression efficiency. In the libvpx-vp9",
+    false
+  ],
+  [
+    93,
+    "How to Use VP9 Corpus Complexity in libvpx",
+    "This article provides a quick guide on how to utilize the corpus complexity feature in a libvpx-vp9 build. You will learn how this feature improves encoding efficiency, how to verify if your library build supports it, and the exact command-line arguments",
+    false
+  ],
+  [
+    92,
+    "libvpx-vp9 Quality Degradation Warning Causes",
+    "When encoding video using the FFmpeg libvpx-vp9 codec, encountering a quality degradation warning typically indicates a configuration issue in your rate control settings. This article outlines the primary causes behind this warning—such as mismatched t",
+    false
+  ],
+  [
+    91,
+    "Debug VP9 Dropped Frames During Heavy Encoding",
+    "Dropping frames during a heavy libvpx-vp9 encode typically points to system resource exhaustion, sub-optimal encoder settings, or input bottlenecks. This systematic debugging guide shows you how to isolate the root cause of dropped frames by analyzing ha",
+    false
+  ],
+  [
+    90,
+    "Understanding the libvpx vp9dec Standalone Decoder",
+    "This article explains the specific role and functionality of vp9dec, the standalone utility included within the libvpx library. It covers its primary use cases, including VP9 decoder validation, performance benchmarking, debugging, and serving as a minim",
+    false
+  ],
+  [
+    89,
+    "Optimize libvpx-vp9 for Mobile Playback",
+    "Optimizing libvpx-vp9 encodes for mobile devices requires balancing high-quality visual compression with the limited hardware decoding power and battery capacities of smartphones and tablets. This article outlines the essential FFmpeg settings, bitrate c",
+    false
+  ],
+  [
+    88,
+    "Older Hardware Platforms Struggling with VP9 Decoding",
+    "This article explores the specific older hardware platforms that historically struggled the most with software-based VP9 video decoding using the libvpx library. It examines the architectural limitations of legacy x86 and ARM processors that caused sever",
+    false
+  ],
+  [
+    87,
+    "Set VP9 Profile in libvpx-vp9 Encoder",
+    "This article explains how to explicitly define the VP9 profile when initializing the libvpx-vp9 encoder. You will learn how to target specific profiles using both FFmpeg command-line flags and the native libvpx C API, ensuring your output video matches y",
+    false
+  ],
+  [
+    86,
+    "VP9 Profiles: Differences Between 0, 1, 2, and 3",
+    "This article explains the functional differences between the four coding profiles—Profile 0, Profile 1, Profile 2, and Profile 3—supported by the libvpx-vp9 video encoder. We will break down how each profile handles color bit depth (8-bit, 10-bit, or",
+    false
+  ],
+  [
+    85,
+    "Does libvpx-vp9 Support GPU Acceleration?",
+    "This article explains whether the standard libvpx-vp9 library can utilize GPU hardware acceleration for video encoding. It covers the technical limitations of the library, how it utilizes system resources, and the alternative hardware-accelerated encoder",
+    false
+  ],
+  [
+    84,
+    "Why Lack of Hardware Encoding Delayed VP9 Adoption",
+    "This article explores how the early adoption of the VP9 video codec—specifically through the software-based libvpx-vp9 encoder—was severely hindered by a historical lack of dedicated hardware encoding support. While VP9 offered superior compression e",
+    false
+  ],
+  [
+    83,
+    "Does iOS Safari Support VP9 Video Playback?",
+    "Apple's modern iOS ecosystem does support VP9 video playback in Safari, but this support comes with important distinctions regarding hardware acceleration, container compatibility, and battery efficiency. This article explains how iOS handles the VP9 cod",
+    false
+  ],
+  [
+    82,
+    "Check VP9 Hardware Decoding Support Programmatically",
+    "This article explains how to programmatically detect whether a client device supports hardware-accelerated decoding for the VP9 video codec (libvpx-vp9). You will learn how to implement these checks across different platforms, including web browsers usin",
+    false
+  ],
+  [
+    81,
+    "Which Browsers Support VP9 Video Decoding",
+    "This article provides a direct overview of modern desktop web browsers that natively support decoding VP9 video, commonly encoded using the libvpx-vp9 library and delivered via the HTML5 <video> tag. By understanding browser compatibility, developers can",
+    false
+  ],
+  [
+    80,
+    "Why Video Developers Choose x264 Over VP9",
+    "This article explores the specific project scenarios where video developers prefer the x264 encoder (H.264/AVC) over libvpx-vp9 (VP9). While VP9 offers superior compression efficiency and smaller file sizes, x264 remains the industry standard for project",
+    false
+  ],
+  [
+    79,
+    "libvpx-vp9 Film Grain vs AV1 Grain Synthesis",
+    "This article compares how the VP9 video codec, utilizing the libvpx-vp9 encoder, preserves natural film grain versus how the AV1 codec manages grain through synthetic grain synthesis. It details the technical mechanisms behind both approaches, highlighti",
+    false
+  ],
+  [
+    78,
+    "VP9 Low Bitrate Blocking Artifacts Explained",
+    "When the libvpx-vp9 encoder is severely starved of bitrate, it prioritizes structural layout over fine detail, resulting in distinct visual degradation. This article examines the most common blocking and compression artifacts that occur under extreme VP9",
+    false
+  ],
+  [
+    77,
+    "VP9 vs x264 VMAF Quality Comparison",
+    "When comparing video encoding performance, objective Video Multi-Method Assessment Fusion (VMAF) scores reveal that libvpx-vp9 consistently outperforms x264 by delivering equivalent visual quality at significantly lower bitrates. This article analyzes th",
+    false
+  ],
+  [
+    76,
+    "libvpx-vp9 vs Hardware H264 Mobile Battery Usage",
+    "This article examines why decoding VP9 video using the software-based libvpx library consumes significantly more battery on mobile devices compared to playing H.264 video with hardware acceleration. While VP9 offers superior compression and saves data, t",
+    false
+  ],
+  [
+    75,
+    "VP9 vs AV1: libvpx-vp9 vs libaom-av1 Performance",
+    "This article compares the current encoding performance of the established libvpx-vp9 encoder against the newer libaom-av1 reference encoder. It analyzes key metrics including compression efficiency, encoding speed, resource consumption, and device compat",
+    false
+  ],
+  [
+    74,
+    "Why Platforms Deploy libvpx-vp9 for High-Res Video",
+    "This article explores why major streaming and media platforms, such as YouTube and Netflix, widely adopted the libvpx-vp9 codec library for high-resolution video delivery. We will examine how this open-source technology delivers significant bandwidth sav",
+    false
+  ],
+  [
+    73,
+    "VP9 vs HEVC CPU Decoding Complexity",
+    "This article analyzes the CPU decoding complexity of VP9 video streams (such as those encoded with libvpx) compared to equivalent HEVC (H.265) streams. It explores the differences in software decoding performance, the architectural features affecting CPU",
+    false
+  ],
+  [
+    72,
+    "libvpx-vp9 vs libvpx-vp8 Bitrate Comparison",
+    "This article analyzes the specific target bitrates where the libvpx-vp9 encoder shows the most significant compression and quality improvements over its predecessor, libvpx-vp8. While VP9 generally outperforms VP8 across all resolutions, the most dramati",
+    false
+  ],
+  [
+    71,
+    "libvpx-vp9 vs x265 Compression Efficiency",
+    "This article provides a direct comparison of the compression efficiency, video quality, and encoding performance of the libvpx-vp9 and x265 encoders. By analyzing bitrate savings, CPU utilization, and visual fidelity, we evaluate which encoder delivers s",
+    false
+  ],
+  [
+    70,
+    "Optimize VP9 Video with SSIM Tune Parameter",
+    "This article explains how to use the structural similarity (SSIM) tuning parameter in the libvpx-vp9 encoder to optimize visual video quality. You will learn what SSIM tuning does, when it is appropriate to use, and the exact FFmpeg commands required to",
+    false
+  ],
+  [
+    69,
+    "VP9 Screen Sharing: Best libvpx Tuning Parameters",
+    "Optimizing screen content sharing using the VP9 codec requires specific configurations to handle high-contrast text, static backgrounds, and low-latency demands. This article provides a direct guide to the essential libvpx-vp9 tuning parameters, explaini",
+    false
+  ],
+  [
+    68,
+    "Configure VP9 Error Resilience for Unstable Networks",
+    "Streaming video over unstable networks often leads to packet loss, resulting in visual artifacts, frozen frames, and stream disruption. This article explains how to configure the error resilience modes in the libvpx-vp9 encoder using FFmpeg to maintain v",
+    false
+  ],
+  [
+    67,
+    "VP9 Temporal Scalability in libvpx",
+    "This article explains how temporal scalability functions within the libvpx-vp9 encoder to dynamically scale video framerates. You will learn about the hierarchical structure of temporal layers, how frame reference dependencies prevent decoding errors whe",
+    false
+  ],
+  [
+    66,
+    "Implement VP9 Spatial Scalability with libvpx-vp9",
+    "This article provides a practical guide on implementing spatial scalability (SVC) using the libvpx-vp9 encoder in FFmpeg. You will learn the core concepts of VP9 spatial layers, the key configuration parameters required by the encoder, and a step-by-step",
+    false
+  ],
+  [
+    65,
+    "VP9 Scalable Video Coding and libvpx Support",
+    "This article provides an overview of Scalable Video Coding (SVC), explaining its core concepts and benefits for video streaming and conferencing. It then details the implementation and level of support for SVC within the libvpx-vp9 library, highlighting",
+    false
+  ],
+  [
+    64,
+    "libvpx-vp9 Packet Loss Management in Live Video",
+    "In live media transmissions, network instability, congestion, and packet loss can severely degrade video quality and cause latency. The libvpx-vp9 codec mitigates these issues through a robust suite of built-in mechanisms, including error resilience mode",
+    false
+  ],
+  [
+    63,
+    "Libvpx-VP9 Deadline Setting for Low Latency Live Streaming",
+    "To achieve ultra-low latency in live streaming using the libvpx-vp9 codec, configuring the correct encoder deadline is essential. This article explains why the realtime deadline setting is the definitive choice for minimizing encoding delay, how it compa",
+    false
+  ],
+  [
+    62,
+    "Configure VP9 for WebRTC Video Conferencing",
+    "Real-time WebRTC and video conferencing applications require low latency, fast encoding speeds, and adaptive bitrate control to maintain high-quality streams under varying network conditions. This guide provides a direct, technical walkthrough on how to",
+    false
+  ],
+  [
+    61,
+    "VP9 for Ultra-Low Latency Live Streaming",
+    "This article evaluates whether the libvpx-vp9 codec is a suitable choice for ultra-low latency live streaming scenarios. We examine the technical limitations of VP9 software encoding, the specific configuration parameters required to minimize delay, and",
+    false
+  ],
+  [
+    60,
+    "Convert 4:4:4 to 4:2:0 in VP9 Encoding",
+    "This article provides a direct guide on how to accurately convert YUV 4:4:4 video sources to the YUV 4:2:0 chroma subsampling format during a libvpx-vp9 encode using FFmpeg. Standard conversion methods often introduce color bleeding, blurriness in fine d",
+    false
+  ],
+  [
+    59,
+    "VP9 Chroma Subsampling Formats Supported by libvpx",
+    "This article outlines the specific chroma subsampling formats fully supported by the libvpx-vp9 encoder. We will examine how different VP9 profiles enable support for 4:2:0, 4:2:2, and 4:4:4 chroma subsampling, along with their respective pixel depths, h",
+    false
+  ],
+  [
+    58,
+    "Process VP9 WebM Video with Alpha Channel",
+    "This article provides a straightforward guide on how to encode and process video sequences containing an alpha channel (transparency) using the libvpx-vp9 encoder inside a WebM container. You will learn the essential FFmpeg commands, key pixel formats, a",
+    false
+  ],
+  [
+    57,
+    "Does VP9 Support Alpha Channel Transparency?",
+    "This article explains whether the libvpx-vp9 encoder supports alpha channel transparency for video encoding. It provides a direct answer to this compatibility question, explains how the transparency mechanism works in VP9, and provides the exact FFmpeg c",
+    false
+  ],
+  [
+    56,
+    "Retain Rec 2020 Color Space in libvpx-vp9",
+    "Retaining the Rec. 2020 color space when transcoding video to the VP9 codec using FFmpeg's libvpx-vp9 encoder requires explicit configuration of color metadata. This article provides a straightforward guide on how to configure your FFmpeg command-line pa",
+    false
+  ],
+  [
+    55,
+    "Can libvpx-vp9 Encode HLG HDR Video?",
+    "Yes, the libvpx-vp9 encoder can effectively encode Hybrid Log-Gamma (HLG) video content. Because HLG is a High Dynamic Range (HDR) standard designed for broadcast and streaming, encoding it requires a 10-bit color depth and precise metadata tagging. This",
+    false
+  ],
+  [
+    54,
+    "VP9 HDR10 Encoding with libvpx-vp9",
+    "To achieve HDR10 compatibility when encoding video using the libvpx-vp9 encoder, you must explicitly signal the SMPTE ST 2084 transfer characteristics alongside correct color primaries and matrix coefficients. This article explains how the VP9 codec and",
+    false
+  ],
+  [
+    53,
+    "Encode HDR Video with libvpx-vp9",
+    "High Dynamic Range (HDR) video offers enhanced color depth and contrast, but encoding it correctly requires specific metadata and profile parameters. This guide outlines the strictly required command line arguments needed to encode HDR video content usin",
+    false
+  ],
+  [
+    52,
+    "Enable 12-Bit VP9 Encoding with libvpx-vp9",
+    "This article provides a practical guide on how to configure and enable 12-bit encoding parameters in the libvpx-vp9 encoder, commonly utilized via FFmpeg, for high-end video mastering. You will learn the specific profile requirements, pixel formats, and",
+    false
+  ],
+  [
+    51,
+    "Does libvpx-vp9 support 10-bit encoding",
+    "This article explores the native support of the libvpx-vp9 library for 10-bit color depth encoding. You will learn about the specific VP9 profiles required for 10-bit video, why this color depth is essential for modern High Dynamic Range (HDR) displays,",
+    false
+  ],
+  [
+    50,
+    "libvpx-vp9 Frame Parallel Decoding Performance",
+    "This article explores the performance impact of the frame parallel decoding feature on VP9 video playback using the libvpx library. It details how enabling this feature affects CPU utilization, decoding speed, playback smoothness, and system latency. By",
+    false
+  ],
+  [
+    49,
+    "Best lag-in-frames Settings for libvpx-vp9 Encoding",
+    "The lag-in-frames parameter in the libvpx-vp9 encoder is a crucial setting that controls the look-ahead buffer, directly impacting video quality, compression efficiency, and latency. This article explains how the parameter works and provides the optimal",
+    false
+  ],
+  [
+    48,
+    "What Are Lookahead Frames in VP9 Encoding",
+    "This article explains the concept of lookahead frames within the libvpx-vp9 video encoding pipeline. It explores how analyzing future frames before they are compressed allows the encoder to make smarter decisions, resulting in superior compression effici",
+    false
+  ],
+  [
+    47,
+    "Force Strict Keyframe Interval in libvpx-vp9",
+    "This article explains how to configure the libvpx-vp9 encoder in FFmpeg to enforce a strict maximum keyframe interval (GOP size). You will learn the specific command-line parameters required to disable scene-cut detection and lock keyframes to a precise,",
+    false
+  ],
+  [
+    46,
+    "How libvpx-vp9 Handles Automatic Keyframe Placement",
+    "This article explains the mechanism behind automatic keyframe placement in the libvpx-vp9 encoder, focusing on how it detects scene changes to optimize video compression. We will explore the role of scene cut detection, the interaction between keyframe i",
+    false
+  ],
+  [
+    45,
+    "VP9 Spatial Adaptive Quantization Explained",
+    "Spatial adaptive quantization (AQ) in the libvpx-vp9 library is a sophisticated encoding technique designed to optimize video quality by dynamically adjusting compression levels across different regions of a single video frame. Instead of applying a unif",
+    false
+  ],
+  [
+    44,
+    "VP9 Variance Adaptive Quantization Video Quality",
+    "Setting the variance adaptive quantization (AQ) mode in the libvpx-vp9 encoder significantly enhances video fidelity by dynamically distributing bitrate based on spatial complexity. This article explains how variance AQ analyzes the contrast and texture",
+    false
+  ],
+  [
+    43,
+    "VP9 Adaptive Quantization Mode Explained",
+    "This article explains the primary function of the Adaptive Quantization (AQ) mode in the libvpx-vp9 video encoder. You will learn how AQ optimizes video quality by dynamically redistributing bitrate within individual video frames based on human visual se",
+    false
+  ],
+  [
+    42,
+    "Why Use Alternate Reference Frames in VP9",
+    "Enabling automatic alternate reference frames (alt-ref frames) in the libvpx-vp9 encoder is a fundamental step in producing professional-grade, highly compressed web video. This article explores how alt-ref frames function as hidden, ultra-high-quality r",
+    false
+  ],
+  [
+    41,
+    "How VP9 Alternate Reference Frames Work in libvpx",
+    "This article explores the inner workings of the automatic alternate reference frames (alt-ref) feature in the libvpx-vp9 video codec. We will examine how this feature enhances compression efficiency by synthesizing invisible reference frames from future",
+    false
+  ],
+  [
+    40,
+    "How VP9 Tile Rows and Columns Partition Frames",
+    "In the libvpx-vp9 video encoder, partitioning a frame into tile rows and tile columns is a key mechanism for enabling parallel encoding and decoding. By dividing a video frame into a grid of independent rectangular regions called tiles, VP9 allows multi-",
+    false
+  ],
+  [
+    39,
+    "Impact of VP9 Tile Columns on Encoding and Decoding Latency",
+    "Using tile columns in the libvpx-vp9 encoder is one of the most effective strategies for reducing both encoding and decoding latency through parallel processing. By dividing video frames into independent vertical columns, the encoder and decoder can dist",
+    false
+  ],
+  [
+    38,
+    "How to Enable VP9 Row-Based Multithreading",
+    "This article explains how to enable and configure row-based multi-threading for the libvpx-vp9 encoder to significantly accelerate video encoding speeds on modern multi-core processors. You will learn the specific FFmpeg parameters required to activate t",
+    false
+  ],
+  [
+    37,
+    "Row-Based Multi-Threading in libvpx-vp9",
+    "This article explains row-based multi-threading within the libvpx-vp9 video codec library. It covers how this parallel processing technique improves CPU utilization and encoding speeds without sacrificing compression efficiency, contrasting it with tradi",
+    false
+  ],
+  [
+    36,
+    "Speed Up libvpx-vp9 Encoding with Multi-Threading",
+    "VP9 is a highly efficient video codec, but its default single-threaded encoding process can be incredibly slow. By leveraging multi-threading parameters in the libvpx-vp9 encoder, you can utilize modern multi-core processors to drastically cut down rende",
+    false
+  ],
+  [
+    35,
+    "Why is libvpx-vp9 slower than x264",
+    "Video encoders must constantly balance the trade-off between compression efficiency and processing speed. This article explains why the libvpx-vp9 encoder is generally slower at rendering and encoding frames than x264 by examining their architectural dif",
+    false
+  ],
+  [
+    34,
+    "Best VP9 cpu-used Value for Real-Time Streaming",
+    "Selecting the correct cpu-used parameter in the libvpx-vp9 encoder is critical for maintaining stable frame rates and preventing lag during live broadcasts. This article explains the recommended cpu-used values for real-time VP9 streaming, how this setti",
+    false
+  ],
+  [
+    33,
+    "Optimizing VP9 Encoding Speed with CPU-Used",
+    "The cpu-used parameter is a critical setting in the libvpx-vp9 video encoder that directly controls the balance between encoding speed and compression efficiency. By adjusting this parameter, users can dictate how much computational effort the encoder ex",
+    false
+  ],
+  [
+    32,
+    "libvpx-vp9 Good vs Best Deadline Settings",
+    "When encoding video using the libvpx-vp9 library in FFmpeg, the deadline parameter (configured via -deadline or -quality) controls the trade-off between encoding speed and compression efficiency. This article explains the practical differences between th",
+    false
+  ],
+  [
+    31,
+    "Libvpx-vp9 Deadline Parameter Encoding Performance",
+    "The deadline parameter in the libvpx-vp9 encoder is a critical setting that directly controls the trade-off between encoding speed and output visual quality. This article explains how adjusting this parameter affects CPU utilization, compression efficien",
+    false
+  ],
+  [
+    30,
+    "Set libvpx-vp9 Max and Min Bitrate in FFmpeg",
+    "Controlling the bitrate in VP9 encodes is crucial for meeting bandwidth requirements and maintaining consistent video quality across different playback devices. This guide demonstrates how to establish the maximum and minimum bitrate limits in the libvpx",
+    false
+  ],
+  [
+    29,
+    "VP9 Two-Pass Encoding Log File Statistics",
+    "During a libvpx-vp9 two-pass video encoding process, the first pass analyzes the input video and writes performance and complexity metrics to a stats log file. This article details the specific statistical information stored in this log file, explaining",
+    false
+  ],
+  [
+    28,
+    "VP9 Two-Pass Encoding: How to Run the First Pass",
+    "Performing a two-pass encode with the libvpx-vp9 codec in FFmpeg is the industry standard for achieving the best balance between video quality and target file size. This guide explains how to execute the initial first pass of this process, detailing the",
+    false
+  ],
+  [
+    27,
+    "Why libvpx-vp9 Requires Two-Pass Encoding",
+    "When encoding video with the VP9 codec using the libvpx-vp9 library, achieving the best balance between file size and visual quality under variable bitrate (VBR) control usually requires a two-pass encoding process. This article explains how two-pass enc",
+    false
+  ],
+  [
+    26,
+    "Configure Strict CBR Encoding with libvpx-vp9",
+    "This article provides a step-by-step guide on how to configure a strict Constant Bitrate (CBR) video encode using the libvpx-vp9 encoder in FFmpeg. You will learn the exact command-line parameters required to force the encoder to maintain a consistent bi",
+    false
+  ],
+  [
+    25,
+    "VP9 VBR vs CBR: libvpx Rate Control Explained",
+    "Choosing between Variable Bitrate (VBR) and Constant Bitrate (CBR) in the libvpx-vp9 encoder significantly impacts your video's visual quality, file size, and streaming performance. This article outlines the practical differences between these two rate c",
+    false
+  ],
+  [
+    24,
+    "VP9 Constrained Quality Rate Control Explained",
+    "This article explains how the Constrained Quality (CQ) rate control mode functions in the libvpx-vp9 video encoder. You will learn how CQ mode balances visual quality and bandwidth usage, how it differs from other rate control methods, and how to configu",
+    false
+  ],
+  [
+    23,
+    "Recommended VP9 CRF Quality for HD Video",
+    "This article provides a clear guide on the recommended Constant Rate Factor (CRF) quality range for encoding high-definition (HD) video using the libvpx-vp9 codec. It covers the optimal settings required to balance visual fidelity and file size, ensuring",
+    false
+  ],
+  [
+    22,
+    "Set Target Average Bitrate in FFmpeg libvpx-vp9",
+    "This guide provides a straightforward explanation of how to set a target average bitrate when encoding video with the VP9 codec (libvpx-vp9) using FFmpeg. It covers the essential command-line flags for two-pass encoding, constrained quality mode, and con",
+    false
+  ],
+  [
+    21,
+    "What is VP9 Constant Rate Factor",
+    "This article explains the Constant Rate Factor (CRF) mode—also known as Constant Quality—in the libvpx-vp9 video encoder. It covers how this rate control mode works, why it is highly efficient for video compression, and the specific commands required",
+    false
+  ],
+  [
+    20,
+    "FFmpeg libvpx-vp9 Logging and Debugging",
+    "When encoding video using the libvpx-vp9 library in FFmpeg, troubleshooting performance bottlenecks, quality degradation, or encoding failures requires access to detailed encoder metrics. This article provides a direct guide to the logging, verbosity, an",
+    false
+  ],
+  [
+    19,
+    "Extract Raw VP9 Video Streams Using FFmpeg",
+    "Extracting raw video streams encoded with the VP9 codec (using libvpx-vp9) is a common task when analyzing video bitstreams, performing quality assessments, or preparing files for hardware decoder testing. This article provides a straightforward, step-by",
+    false
+  ],
+  [
+    18,
+    "Standard File Extension for libvpx-vp9 Media",
+    "This article explains the standard file extension used for media files encoded with the libvpx-vp9 codec. It covers the primary container format designed for this codec, alternative file extensions you might encounter, and how these formats are utilized",
+    false
+  ],
+  [
+    17,
+    "FFmpeg libvpx-vp9 Color Space Tagging",
+    "When encoding video to VP9 using the libvpx-vp9 encoder in FFmpeg, managing color space tagging is crucial for ensuring accurate color reproduction across different media players and web browsers. This article explains how FFmpeg processes color metadata",
+    false
+  ],
+  [
+    16,
+    "Why libvpx-vp9 is paired with Opus audio",
+    "The pairing of the libvpx-vp9 video encoder with the Opus audio codec is the industry standard for high-efficiency, royalty-free web video streaming. This article explains the technical and economic reasons behind this frequent pairing, focusing on their",
+    false
+  ],
+  [
+    15,
+    "How to Set VP9 Pixel Format in FFmpeg",
+    "Specifying the correct output pixel format when encoding video with the libvpx-vp9 encoder in FFmpeg is crucial for achieving the desired compatibility, color depth, and video quality. This article provides a straightforward guide on how to use the -pixf",
+    false
+  ],
+  [
+    14,
+    "FFmpeg libvpx-vp9 Default Encoding Settings",
+    "This article provides a clear overview of the default encoding configurations applied when using the libvpx-vp9 encoder in FFmpeg without specifying any extra flags. It covers key parameters such as rate control, target bitrate, CPU usage, pixel format,",
+    false
+  ],
+  [
+    13,
+    "Compile FFmpeg from Source with VP9 libvpx",
+    "This guide provides a straightforward, step-by-step walkthrough for compiling FFmpeg from source code with libvpx enabled, allowing you to encode high-quality VP9 video. You will learn how to install the necessary build prerequisites, compile the latest",
+    false
+  ],
+  [
+    12,
+    "Recommended FFmpeg Version for Stable libvpx-vp9",
+    "This article identifies the recommended FFmpeg version for achieving the most stable and efficient libvpx-vp9 video encoding. It explains why utilizing the latest stable major releases of FFmpeg—specifically FFmpeg 6.1 or FFmpeg 7.0—alongside an upda",
+    false
+  ],
+  [
+    11,
+    "How to Use libvpx-vp9 in FFmpeg",
+    "This article provides a straightforward guide on how to invoke the libvpx-vp9 encoder within an FFmpeg command line. You will learn the basic command structure, recommended encoding methods like Constant Quality (CRF) and Two-Pass encoding, and how to op",
+    false
+  ],
+  [
+    10,
+    "libvpx-vp9 and the Alliance for Open Media",
+    "This article explores the historical and technological relationship between the libvpx-vp9 video codec library and the Alliance for Open Media (AOMedia). It outlines how Google’s development of the VP9 video format served as the direct foundation for A",
+    false
+  ],
+  [
+    9,
+    "How libvpx-vp9 Differs From the x264 Encoder",
+    "While both libvpx-vp9 and x264 are premier open-source video encoders used globally, they are built on fundamentally different compression standards, licensing philosophies, and performance architectures. This article analyzes the core distinctions betwe",
+    false
+  ],
+  [
+    8,
+    "Best Open Source Alternatives to libvpx-vp9",
+    "This article explores the primary open-source alternatives to the libvpx-vp9 video encoder. While VP9 remains a highly capable, royalty-free video codec, several modern open-source alternatives offer better compression efficiency, faster encoding speeds,",
+    false
+  ],
+  [
+    7,
+    "Is libvpx-vp9 Free for Commercial Use?",
+    "This article examines the licensing model of the libvpx-vp9 library to determine if developers and businesses can use it for commercial projects without paying licensing fees. We will cover the software license, Google's patent grants, how it compares to",
+    false
+  ],
+  [
+    6,
+    "How Does libvpx-vp9 Relate to WebM?",
+    "This article explains the relationship between the libvpx-vp9 video encoder and the WebM file format. It defines the distinct roles of the VP9 video compression standard, the libvpx library, and the WebM container, demonstrating how they work in tandem t",
+    false
+  ],
+  [
+    5,
+    "When Was libvpx-vp9 Released for Public Use",
+    "This article provides the exact release date of the libvpx-vp9 video codec library, detailing its public debut, the specific software version that introduced it, and its role in the evolution of modern online video streaming. The libvpx library officiall",
+    false
+  ],
+  [
+    4,
+    "Advantages of libvpx-vp9 for Web Video Delivery",
+    "This article explores the primary advantages of using the libvpx-vp9 encoder for web video delivery. We examine how the VP9 codec improves compression efficiency, reduces bandwidth costs, maintains high visual quality, and ensures broad compatibility acr",
+    false
+  ],
+  [
+    3,
+    "VP9 vs HEVC Licensing Models Explained",
+    "This article compares the licensing models of the VP9 and HEVC (H.265) video codecs, highlighting the cost, complexity, and administrative differences between them. While VP9 offers an open-source, royalty-free model backed by Google, HEVC relies on a pr",
+    false
+  ],
+  [
+    2,
+    "Who Developed and Maintains libvpx-vp9?",
+    "This article provides a concise overview of the history, original development, and current maintenance of the libvpx-vp9 video codec library. Readers will learn about the transition of this technology from its initial creators to Google, and how it is ma",
+    false
+  ],
+  [
+    1,
+    "What Is the libvpx-vp9 Video Encoder?",
+    "This article provides a clear overview of the libvpx-vp9 video encoder, detailing its primary function, how it operates, and why it is a critical tool for modern web video streaming. You will learn about its compression efficiency, its relationship with",
+    false
+  ]
+]

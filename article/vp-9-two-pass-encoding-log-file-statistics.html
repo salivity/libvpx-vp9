@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP9 Two-Pass Encoding Log File Statistics - libvpx-vp9</title>
+    <meta name="description" content="During a libvpx-vp9 two-pass video encoding process, the first pass analyzes the input video and writes performance and complexity metrics to a stats log file. This article details the specific statistical information stored in this log file, explaining">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/vp-9-two-pass-encoding-log-file-statistics">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="VP9 Two-Pass Encoding Log File Statistics - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/vp-9-two-pass-encoding-log-file-statistics" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="During a libvpx-vp9 two-pass video encoding process, the first pass analyzes the input video and writes performance and complexity metrics to a stats log file. This article details the specific statistical information stored in this log file, explaining" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="vp9-two-pass-encoding-log-file-statistics">VP9 Two-Pass Encoding
+Log File Statistics</h1>
+<p>During a libvpx-vp9 two-pass video encoding process, the first pass
+analyzes the input video and writes performance and complexity metrics
+to a stats log file. This article details the specific statistical
+information stored in this log file, explaining how the encoder uses
+these metrics per frame to optimize bitrate distribution and visual
+quality during the second pass.</p>
+<p>In the libvpx library, the first-pass statistics are structured on a
+per-frame basis using a specific C-struct (historically defined as
+<code>FIRSTPASS_STATS</code> in the libvpx source code). The log file is
+a binary stream of these structures containing the following precise
+statistical metrics for every frame of the video:</p>
+<h3 id="1-frame-identification-and-timing">1. Frame Identification and
+Timing</h3>
+<ul>
+<li><strong>Frame Number:</strong> The sequential index of the frame
+within the video stream.</li>
+<li><strong>Duration:</strong> The display duration of the frame, which
+helps the encoder calculate the exact frame rate and temporal
+weighting.</li>
+<li><strong>Weight:</strong> A calculated value representing the
+relative importance of the frame, often correlated with its duration and
+impact on overall video quality.</li>
+</ul>
+<h3 id="2-spatial-and-temporal-complexity-error-metrics">2. Spatial and
+Temporal Complexity (Error Metrics)</h3>
+<p>These values assess how difficult a frame is to compress by measuring
+prediction errors:</p>
+<ul>
+<li><strong>Intra Error:</strong> The sum of squared errors when
+predicting the frame using only spatial (intra-frame) compression. A
+high intra error indicates high spatial detail, sharp textures, or
+complex patterns.</li>
+<li><strong>Coded Error:</strong> The motion-compensated prediction
+error relative to reference frames. A low coded error means the frame is
+highly predictable from previous or future frames (low motion).</li>
+<li><strong>Single-Reference Coded Error (sr_coded_error):</strong> The
+prediction error calculated using only a single reference frame without
+motion compensation. This helps determine if motion estimation is
+actively beneficial for the frame.</li>
+</ul>
+<h3 id="3-motion-vector-mv-statistics">3. Motion Vector (MV)
+Statistics</h3>
+<p>The encoder tracks how objects move across frames to determine motion
+complexity:</p>
+<ul>
+<li><strong>Average Motion Vectors (MVr, MVc):</strong> The average raw
+values for row (vertical) and column (horizontal) motion vectors.</li>
+<li><strong>Absolute Motion Vectors (mvr_abs, mvc_abs):</strong> The
+average absolute magnitude of row and column motion, representing the
+overall speed of movement.</li>
+<li><strong>Motion Vector Variance (MVrv, MVcv):</strong> Measures the
+consistency of motion. Low variance indicates uniform panning, while
+high variance indicates chaotic, multi-directional motion.</li>
+<li><strong>Motion In/Out Count (mv_in_out_count):</strong> An
+estimation of pixels or objects entering or leaving the frame
+boundaries, which is useful for detecting pans, zooms, and scene
+transitions.</li>
+</ul>
+<h3 id="4-block-type-and-coding-decisions">4. Block Type and Coding
+Decisions</h3>
+<p>The log records the percentage distribution of different block types
+predicted during the fast first-pass analysis:</p>
+<ul>
+<li><strong>Percentage Inter-Coded (pcnt_inter):</strong> The fraction
+of the frame's blocks that are best predicted using motion estimation
+from other frames.</li>
+<li><strong>Percentage Motion (pcnt_motion):</strong> The fraction of
+blocks that have non-zero motion vectors.</li>
+<li><strong>Percentage Second Reference (pcnt_second_ref):</strong> The
+fraction of blocks that utilize a secondary reference frame (like
+alt-ref frames) for temporal prediction.</li>
+<li><strong>Percentage Neutral (pcnt_neutral):</strong> The fraction of
+blocks where the difference between spatial (intra) and temporal (inter)
+prediction error is negligible, indicating areas like static flat
+backgrounds.</li>
+</ul>
+<h3 id="5-multi-layer-and-scalability-metrics">5. Multi-Layer and
+Scalability Metrics</h3>
+<ul>
+<li><strong>Spatial Layer ID:</strong> In multi-layer or scalable video
+coding (SVC) scenarios, this identifier tracks which spatial resolution
+layer the statistics belong to, ensuring proper bit allocation across
+layers.</li>
+</ul>
+<h3 id="how-the-second-pass-uses-this-data">How the Second Pass Uses
+This Data</h3>
+<p>The second pass reads this accumulated log file to map out the entire
+video's complexity profile. By analyzing these metrics, the encoder can
+anticipate scene cuts (indicated by sudden spikes in coded error),
+identify static scenes that require very few bits, allocate higher
+bitrates to complex action sequences, and strategically place keyframes
+(i-frames) and golden frames to maximize compression efficiency.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

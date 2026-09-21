@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFmpeg libvpx-vp9 Default Encoding Settings - libvpx-vp9</title>
+    <meta name="description" content="This article provides a clear overview of the default encoding configurations applied when using the libvpx-vp9 encoder in FFmpeg without specifying any extra flags. It covers key parameters such as rate control, target bitrate, CPU usage, pixel format,">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/f-fmpeg-libvpx-vp-9-default-encoding-settings">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="FFmpeg libvpx-vp9 Default Encoding Settings - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/f-fmpeg-libvpx-vp-9-default-encoding-settings" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a clear overview of the default encoding configurations applied when using the libvpx-vp9 encoder in FFmpeg without specifying any extra flags. It covers key parameters such as rate control, target bitrate, CPU usage, pixel format," />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="ffmpeg-libvpx-vp9-default-encoding-settings">FFmpeg libvpx-vp9
+Default Encoding Settings</h1>
+<p>This article provides a clear overview of the default encoding
+configurations applied when using the <code>libvpx-vp9</code> encoder in
+FFmpeg without specifying any extra flags. It covers key parameters such
+as rate control, target bitrate, CPU usage, pixel format, and threading,
+helping you understand how FFmpeg processes VP9 video out of the
+box.</p>
+<p>When you run FFmpeg with the basic command
+<code>ffmpeg -i input.mp4 -c:v libvpx-vp9 output.webm</code> without
+defining additional parameters, the encoder falls back on a set of
+built-in defaults. These defaults are generally optimized for
+compatibility rather than speed or visual quality, often resulting in
+slow encoding times and low-quality output if left unmodified.</p>
+<h2 id="default-bitrate-and-rate-control">Default Bitrate and Rate
+Control</h2>
+<p>By default, the <code>libvpx-vp9</code> encoder uses <strong>One-Pass
+Average Bitrate (ABR)</strong> mode.</p>
+<ul>
+<li><strong>Default Bitrate:</strong> If no bitrate (<code>-b:v</code>)
+is specified, FFmpeg defaults to <strong>256 kbps</strong>.</li>
+<li><strong>Quality Implications:</strong> A default of 256 kbps is
+extremely low for modern high-definition video (such as 1080p or 4K),
+which will result in heavy pixelation and compression artifacts.</li>
+</ul>
+<h2 id="speed-and-quality-settings-cpu-used">Speed and Quality Settings
+(CPU-Used)</h2>
+<p>The <code>-cpu-used</code> parameter controls the trade-off between
+encoding speed and video quality. The scale ranges from <code>0</code>
+(slowest, highest quality) to <code>8</code> (fastest, lowest
+quality).</p>
+<ul>
+<li><strong>Default Value:</strong> The default setting is
+<strong><code>1</code></strong>.</li>
+<li><strong>Impact:</strong> Because the default is set to
+<code>1</code>, the encoding process will be exceptionally slow. For
+practical use, values between <code>2</code> and <code>4</code> are
+recommended for a better balance, or <code>5</code> to <code>8</code>
+for fast/real-time encoding.</li>
+</ul>
+<h2 id="threading-and-multi-processing">Threading and
+Multi-Processing</h2>
+<p>VP9 encoding is highly resource-intensive, but its default threading
+settings do not utilize modern multi-core processors efficiently.</p>
+<ul>
+<li><strong>Default Threads:</strong> The default is
+<strong><code>1</code> thread</strong>.</li>
+<li><strong>Row-Based Multithreading:</strong> Row-based multithreading
+(<code>-row-mt 1</code>) is <strong>disabled</strong> by default.</li>
+<li><strong>Impact:</strong> Without manually setting the
+<code>-threads</code> and <code>-row-mt</code> flags, your CPU usage
+will remain low, and encoding will take significantly longer.</li>
+</ul>
+<h2 id="pixel-format-and-color-space">Pixel Format and Color Space</h2>
+<ul>
+<li><strong>Default Format:</strong> FFmpeg will attempt to match the
+input format, but it typically defaults to
+<strong><code>yuv420p</code></strong> (8-bit, 4:2:0 chroma subsampling)
+for maximum compatibility with web browsers and media players.</li>
+</ul>
+<h2 id="keyframe-interval-gop-size">Keyframe Interval (GOP Size)</h2>
+<ul>
+<li><strong>Default GOP:</strong> The default maximum keyframe interval
+(Group of Pictures size) is <strong>250 frames</strong>. This means the
+encoder will insert a keyframe at least once every 250 frames, or sooner
+if a scene change is detected.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

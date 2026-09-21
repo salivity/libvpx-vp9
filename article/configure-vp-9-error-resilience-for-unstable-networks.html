@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure VP9 Error Resilience for Unstable Networks - libvpx-vp9</title>
+    <meta name="description" content="Streaming video over unstable networks often leads to packet loss, resulting in visual artifacts, frozen frames, and stream disruption. This article explains how to configure the error resilience modes in the libvpx-vp9 encoder using FFmpeg to maintain v">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/configure-vp-9-error-resilience-for-unstable-networks">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Configure VP9 Error Resilience for Unstable Networks - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/configure-vp-9-error-resilience-for-unstable-networks" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Streaming video over unstable networks often leads to packet loss, resulting in visual artifacts, frozen frames, and stream disruption. This article explains how to configure the error resilience modes in the libvpx-vp9 encoder using FFmpeg to maintain v" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="configure-vp9-error-resilience-for-unstable-networks">Configure
+VP9 Error Resilience for Unstable Networks</h1>
+<p>Streaming video over unstable networks often leads to packet loss,
+resulting in visual artifacts, frozen frames, and stream disruption.
+This article explains how to configure the error resilience modes in the
+<code>libvpx-vp9</code> encoder using FFmpeg to maintain video playback
+stability and recover quickly from packet loss under poor network
+conditions.</p>
+<h2 id="enabling-the-error-resilience-flag">Enabling the Error
+Resilience Flag</h2>
+<p>The primary setting for combating packet loss in VP9 is the error
+resilience flag. By default, VP9 uses temporal predictability to
+maximize compression efficiency, meaning frames heavily rely on previous
+frames. If a packet is lost, the decoder cannot reconstruct subsequent
+frames properly, leading to persistent corruption.</p>
+<p>Enabling error resilience restricts certain prediction features,
+ensuring that the decoder can recover much faster when a frame is
+lost.</p>
+<p>In FFmpeg, enable this flag using the <code>-error-resilient</code>
+option:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-error-resilient</span> 1 output.webm</span></code></pre></div>
+<p>Setting <code>-error-resilient 1</code> ensures that the encoder
+structures the bitstream in a way that allows the decoder to resume
+clean playback quickly after packet loss occurs.</p>
+<h2 id="optimizing-keyframe-intervals-gop-size">Optimizing Keyframe
+Intervals (GOP Size)</h2>
+<p>When packet loss occurs, the decoder usually needs a new keyframe
+(I-frame) to completely reset the video stream and clear any visual
+corruption. On unstable networks, relying on long keyframe intervals can
+result in prolonged visual artifacts.</p>
+<p>To recover quickly, reduce the maximum keyframe interval using the
+<code>-g</code> flag. For example, for a 30 fps stream, a keyframe every
+2 seconds (60 frames) is recommended:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-error-resilient</span> 1 <span class="at">-g</span> 60 output.webm</span></code></pre></div>
+<p>While shorter GOP sizes increase the required bitrate slightly, they
+guarantee a clean recovery point at regular, short intervals.</p>
+<h2 id="utilizing-video-tiles-for-error-isolation">Utilizing Video Tiles
+for Error Isolation</h2>
+<p>VP9 allows you to split a single video frame into independent
+grid-like sections called tiles. Tiles are encoded and decoded
+independently. If a packet containing data for one part of the screen is
+lost, the corruption is isolated to that specific tile, while the rest
+of the screen remains clear.</p>
+<p>You can configure tiles using <code>-tile-columns</code> and
+<code>-tile-rows</code> (values are in log2 scale):</p>
+<ul>
+<li><code>-tile-columns 2</code> (creates 4 columns)</li>
+<li><code>-tile-rows 1</code> (creates 2 rows)</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-error-resilient</span> 1 <span class="at">-g</span> 60 <span class="at">-tile-columns</span> 2 <span class="at">-tile-rows</span> 1 output.webm</span></code></pre></div>
+<p>This configuration divides the frame into 8 independent tiles,
+limiting the visual impact of any packet loss to a fraction of the
+screen.</p>
+<h2 id="configuring-low-latency-and-real-time-settings">Configuring
+Low-Latency and Real-Time Settings</h2>
+<p>For live streaming over unstable connections, lookahead buffering can
+cause transmission delays and exacerbate packet loss recovery issues.
+You should disable frame lookahead and configure the encoder for
+real-time performance.</p>
+<ul>
+<li>Set <code>-lag-in-frames 0</code> to disable lookahead.</li>
+<li>Set <code>-quality realtime</code> (or
+<code>-deadline realtime</code>) to optimize the encoder for live,
+low-latency streaming.</li>
+<li>Use a faster <code>-speed</code> preset (between 5 and 8) to reduce
+CPU load during real-time encoding.</li>
+</ul>
+<h3 id="complete-ffmpeg-configuration-example">Complete FFmpeg
+Configuration Example</h3>
+<p>Below is a complete FFmpeg command optimized for streaming VP9 over
+an unstable network with error resilience, fast recovery, and low
+latency:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="dt">\</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-c:v</span> libvpx-vp9 <span class="dt">\</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-error-resilient</span> 1 <span class="dt">\</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-g</span> 60 <span class="dt">\</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-tile-columns</span> 2 <span class="dt">\</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-tile-rows</span> 1 <span class="dt">\</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-lag-in-frames</span> 0 <span class="dt">\</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">-quality</span> realtime <span class="dt">\</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">-speed</span> 5 <span class="dt">\</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">-b:v</span> 2M <span class="dt">\</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  output.webm</span></code></pre></div></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP9 Two-Pass Encoding: How to Run the First Pass - libvpx-vp9</title>
+    <meta name="description" content="Performing a two-pass encode with the libvpx-vp9 codec in FFmpeg is the industry standard for achieving the best balance between video quality and target file size. This guide explains how to execute the initial first pass of this process, detailing the">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/vp-9-two-pass-encoding-how-to-run-the-first-pass">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="VP9 Two-Pass Encoding: How to Run the First Pass - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/vp-9-two-pass-encoding-how-to-run-the-first-pass" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Performing a two-pass encode with the libvpx-vp9 codec in FFmpeg is the industry standard for achieving the best balance between video quality and target file size. This guide explains how to execute the initial first pass of this process, detailing the" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="vp9-two-pass-encoding-how-to-run-the-first-pass">VP9 Two-Pass
+Encoding: How to Run the First Pass</h1>
+<p>Performing a two-pass encode with the <code>libvpx-vp9</code> codec
+in FFmpeg is the industry standard for achieving the best balance
+between video quality and target file size. This guide explains how to
+execute the initial first pass of this process, detailing the specific
+command-line arguments required to analyze your source video and
+generate the necessary log file for the second pass.</p>
+<p>To run the first pass of a two-pass VP9 encode, you must use FFmpeg
+to analyze the video and write the analysis statistics to a log file.
+Because the actual video output of the first pass is not needed, you
+discard the output video stream to save time and disk space.</p>
+<h3 id="the-first-pass-command">The First Pass Command</h3>
+<p>Run the following command in your terminal:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-b:v</span> 2M <span class="at">-pass</span> 1 <span class="at">-an</span> <span class="at">-f</span> null /dev/null</span></code></pre></div>
+<p><em>Note: If you are using Windows, replace <code>/dev/null</code> at
+the end of the command with <code>NUL</code>.</em></p>
+<h3 id="parameter-breakdown">Parameter Breakdown</h3>
+<ul>
+<li><strong><code>-i input.mp4</code></strong>: Specifies the path to
+your source video file.</li>
+<li><strong><code>-c:v libvpx-vp9</code></strong>: Selects the VP9 video
+encoder.</li>
+<li><strong><code>-b:v 2M</code></strong>: Sets the target video bitrate
+(e.g., 2 Megabits per second). This target is crucial, as the first pass
+analyzes how to best distribute these bits across the duration of the
+video.</li>
+<li><strong><code>-pass 1</code></strong>: Instructs FFmpeg to run the
+first pass of the two-pass mode. This automatically generates a log file
+named <code>ffmpeg2pass-0.log</code> in your current directory.</li>
+<li><strong><code>-an</code></strong>: Disables audio processing.
+Excluding audio during the first pass speeds up the encoding process, as
+audio only needs to be processed during the second pass.</li>
+<li><strong><code>-f null /dev/null</code> (or <code>NUL</code> on
+Windows)</strong>: Forces FFmpeg to output to a "null" muxer,
+effectively discarding the video output. This ensures you only write the
+lightweight log file needed for the next step.</li>
+</ul>
+<p>Once this command finishes, you will see a newly created log file in
+your directory. You are then ready to execute the second pass, which
+will read this log file to apply the final compression and encode the
+audio.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

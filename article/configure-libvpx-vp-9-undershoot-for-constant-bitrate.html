@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure libvpx-vp9 Undershoot for Constant Bitrate - libvpx-vp9</title>
+    <meta name="description" content="This article explains how to properly configure the undershoot percentage (-undershoot-pct) in the libvpx-vp9 encoder to achieve a stable Constant Bitrate (CBR). You will learn how this parameter interacts with other rate control settings in FFmpeg and t">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/configure-libvpx-vp-9-undershoot-for-constant-bitrate">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Configure libvpx-vp9 Undershoot for Constant Bitrate - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/configure-libvpx-vp-9-undershoot-for-constant-bitrate" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains how to properly configure the undershoot percentage (-undershoot-pct) in the libvpx-vp9 encoder to achieve a stable Constant Bitrate (CBR). You will learn how this parameter interacts with other rate control settings in FFmpeg and t" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="configure-libvpx-vp9-undershoot-for-constant-bitrate">Configure
+libvpx-vp9 Undershoot for Constant Bitrate</h1>
+<p>This article explains how to properly configure the undershoot
+percentage (<code>-undershoot-pct</code>) in the <code>libvpx-vp9</code>
+encoder to achieve a stable Constant Bitrate (CBR). You will learn how
+this parameter interacts with other rate control settings in FFmpeg and
+the exact command-line configurations required for both strict and
+optimized CBR streams.</p>
+<h2 id="understanding-undershoot-percentage-in-vp9">Understanding
+Undershoot Percentage in VP9</h2>
+<p>The <code>-undershoot-pct</code> parameter in the
+<code>libvpx-vp9</code> encoder dictates how much the encoder is allowed
+to drop below the target bitrate during low-complexity scenes (such as
+static screens or simple animations). It accepts integer values from
+<code>0</code> to <code>100</code>, representing the percentage of
+target bitrate variance allowed on the lower bound.</p>
+<p>To maintain a true Constant Bitrate, you must configure this
+parameter alongside target, minimum, and maximum bitrates, as well as
+the overshoot percentage.</p>
+<hr />
+<h2 id="how-to-configure-undershoot-for-strict-cbr">How to Configure
+Undershoot for Strict CBR</h2>
+<p>If your streaming pipeline or hardware decoder requires a strictly
+flat bitrate stream (where the bandwidth utilization remains completely
+constant even during static scenes), you must minimize the allowed
+undershoot.</p>
+<h3 id="recommended-settings-for-strict-cbr">Recommended Settings for
+Strict CBR</h3>
+<ul>
+<li><strong><code>-undershoot-pct</code></strong>: Set to <code>0</code>
+or a very low value (e.g., <code>5</code>). This forces the encoder to
+spend the allocated bitrate by lowering quantization noise or inserting
+filler data during easy-to-encode scenes.</li>
+<li><strong><code>-overshoot-pct</code></strong>: Set to <code>0</code>
+to prevent the encoder from exceeding the target limit.</li>
+<li><strong><code>-minrate</code> and <code>-maxrate</code></strong>:
+Must be set identical to the target bitrate (<code>-b:v</code>).</li>
+<li><strong><code>-bufsize</code></strong>: Controls the rate control
+buffer size. For CBR, this should typically be set to 50% to 100% of the
+target bitrate.</li>
+</ul>
+<h3 id="ffmpeg-command-example-strict-cbr">FFmpeg Command Example
+(Strict CBR)</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>-b:v 2000k <span class="at">-minrate</span> 2000k <span class="at">-maxrate</span> 2000k <span class="at">-bufsize</span> 1000k <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>-undershoot-pct 0 <span class="at">-overshoot-pct</span> 0 <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>output.webm</span></code></pre></div>
+<hr />
+<h2
+id="how-to-configure-undershoot-for-optimized-cbr-recommended-for-webstreaming">How
+to Configure Undershoot for Optimized CBR (Recommended for
+Web/Streaming)</h2>
+<p>For most live streaming scenarios (such as WebRTC or DASH/HLS
+streaming), a "strict" physical constant bitrate is inefficient. It
+wastes bandwidth on static frames. Instead, you should target a capped
+CBR where the bitrate never exceeds the limit but is allowed to drop to
+save bandwidth when nothing is happening on screen.</p>
+<h3 id="recommended-settings-for-optimized-cbr">Recommended Settings for
+Optimized CBR</h3>
+<ul>
+<li><strong><code>-undershoot-pct</code></strong>: Set to
+<code>100</code>. This allows the encoder to drop the bitrate as much as
+necessary during completely static scenes, saving massive amounts of
+bandwidth.</li>
+<li><strong><code>-overshoot-pct</code></strong>: Set to <code>0</code>
+(or up to <code>15</code> for low-latency live streams to allow brief
+spikes for sudden high-motion scenes).</li>
+</ul>
+<h3 id="ffmpeg-command-example-optimized-cbr">FFmpeg Command Example
+(Optimized CBR)</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="dt">\</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>-b:v 2000k <span class="at">-minrate</span> 2000k <span class="at">-maxrate</span> 2000k <span class="at">-bufsize</span> 1000k <span class="dt">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>-undershoot-pct 100 <span class="at">-overshoot-pct</span> 0 <span class="dt">\</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>output.webm</span></code></pre></div>
+<hr />
+<h2 id="summary-of-parameter-roles">Summary of Parameter Roles</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Recommended Value (Strict)</th>
+<th style="text-align: left;">Recommended Value (Optimized)</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>-b:v</code></td>
+<td style="text-align: left;">e.g., <code>2000k</code></td>
+<td style="text-align: left;">e.g., <code>2000k</code></td>
+<td style="text-align: left;">Target video bitrate.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>-minrate</code></td>
+<td style="text-align: left;">Equal to <code>-b:v</code></td>
+<td style="text-align: left;">Equal to <code>-b:v</code></td>
+<td style="text-align: left;">Minimum allowed bitrate.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>-maxrate</code></td>
+<td style="text-align: left;">Equal to <code>-b:v</code></td>
+<td style="text-align: left;">Equal to <code>-b:v</code></td>
+<td style="text-align: left;">Maximum allowed bitrate.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>-undershoot-pct</code></td>
+<td style="text-align: left;"><code>0</code> to <code>5</code></td>
+<td style="text-align: left;"><code>100</code></td>
+<td style="text-align: left;">Allowed percentage drop below target
+bitrate.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>-overshoot-pct</code></td>
+<td style="text-align: left;"><code>0</code></td>
+<td style="text-align: left;"><code>0</code> (or <code>10</code> for
+live)</td>
+<td style="text-align: left;">Allowed percentage spike above target
+bitrate.</td>
+</tr>
+</tbody>
+</table></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

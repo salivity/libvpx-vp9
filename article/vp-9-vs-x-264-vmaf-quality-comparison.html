@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP9 vs x264 VMAF Quality Comparison - libvpx-vp9</title>
+    <meta name="description" content="When comparing video encoding performance, objective Video Multi-Method Assessment Fusion (VMAF) scores reveal that libvpx-vp9 consistently outperforms x264 by delivering equivalent visual quality at significantly lower bitrates. This article analyzes th">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/vp-9-vs-x-264-vmaf-quality-comparison">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="VP9 vs x264 VMAF Quality Comparison - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/vp-9-vs-x-264-vmaf-quality-comparison" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="When comparing video encoding performance, objective Video Multi-Method Assessment Fusion (VMAF) scores reveal that libvpx-vp9 consistently outperforms x264 by delivering equivalent visual quality at significantly lower bitrates. This article analyzes th" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="vp9-vs-x264-vmaf-quality-comparison">VP9 vs x264 VMAF Quality
+Comparison</h1>
+<p>When comparing video encoding performance, objective Video
+Multi-Method Assessment Fusion (VMAF) scores reveal that libvpx-vp9
+consistently outperforms x264 by delivering equivalent visual quality at
+significantly lower bitrates. This article analyzes the VMAF score
+differences between these two popular encoders, examines the bitrate
+efficiency gap, and highlights the trade-offs in encoding speed and
+computational resource usage.</p>
+<h2 id="bitrate-savings-and-vmaf-score-equivalency">Bitrate Savings and
+VMAF Score Equivalency</h2>
+<p>On average, libvpx-vp9 achieves a <strong>30% to 50% bitrate
+reduction</strong> compared to x264 while maintaining the exact same
+VMAF score.</p>
+<p>In objective quality testing:</p>
+<ul>
+<li><strong>At Identical Bitrates:</strong> If you compress a video
+using both encoders at the same target bitrate (e.g., 2000 Kbps for
+1080p), the libvpx-vp9 encode will yield a significantly higher VMAF
+score than the x264 encode. This gap is especially noticeable in
+high-motion scenes and complex textures where x264 suffers from blocking
+artifacts.</li>
+<li><strong>To Reach Target VMAF Thresholds:</strong> In streaming
+workflows, a VMAF score of 93 to 95 is generally considered the
+threshold for "visually lossless" quality. To reach a VMAF score of 93,
+an x264 encode might require a bitrate of 4500 Kbps, whereas a
+libvpx-vp9 encode can routinely achieve the same score at approximately
+2500 to 3000 Kbps.</li>
+</ul>
+<h2 id="performance-across-different-resolutions">Performance Across
+Different Resolutions</h2>
+<p>The efficiency delta between the two encoders becomes more pronounced
+as the resolution of the source video increases:</p>
+<ul>
+<li><strong>1080p and higher (2K/4K):</strong> VP9 utilizes larger
+prediction blocks (up to 64x64) compared to H.264's maximum of 16x16
+macroblocks. This allows libvpx-vp9 to compress flat areas and
+high-resolution details much more efficiently, leading to vastly
+superior VMAF scores at higher resolutions.</li>
+<li><strong>720p and lower:</strong> While VP9 still outperforms x264 at
+lower resolutions, the VMAF score gap narrows. At very low resolutions,
+the overhead of VP9's advanced coding tools yields diminishing returns
+relative to the simpler H.264 standard.</li>
+</ul>
+<h2 id="the-cost-of-higher-vmaf-computational-complexity">The Cost of
+Higher VMAF: Computational Complexity</h2>
+<p>While libvpx-vp9 wins decisively in VMAF-per-bitrate comparisons, it
+requires substantially more computational power.</p>
+<ul>
+<li><strong>Encoding CPU Cycles:</strong> Compressing video with
+libvpx-vp9 can take up to 3 to 10 times longer than x264 using
+equivalent quality presets (e.g., comparing VP9 <code>-speed 1</code> or
+<code>2</code> to x264 <code>preset medium</code>).</li>
+<li><strong>Preset Trade-offs:</strong> To speed up VP9 encoding,
+developers often use faster speed settings (like <code>-speed 4</code>
+or higher in FFmpeg). While this reduces encoding time closer to x264
+speeds, it also reduces the objective VMAF score, narrowing the quality
+advantage over a well-tuned x264 encode.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why libvpx-vp9 Requires Two-Pass Encoding - libvpx-vp9</title>
+    <meta name="description" content="When encoding video with the VP9 codec using the libvpx-vp9 library, achieving the best balance between file size and visual quality under variable bitrate (VBR) control usually requires a two-pass encoding process. This article explains how two-pass enc">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/why-libvpx-vp-9-requires-two-pass-encoding">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why libvpx-vp9 Requires Two-Pass Encoding - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/why-libvpx-vp-9-requires-two-pass-encoding" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="When encoding video with the VP9 codec using the libvpx-vp9 library, achieving the best balance between file size and visual quality under variable bitrate (VBR) control usually requires a two-pass encoding process. This article explains how two-pass enc" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="why-libvpx-vp9-requires-two-pass-encoding">Why libvpx-vp9
+Requires Two-Pass Encoding</h1>
+<p>When encoding video with the VP9 codec using the
+<code>libvpx-vp9</code> library, achieving the best balance between file
+size and visual quality under variable bitrate (VBR) control usually
+requires a two-pass encoding process. This article explains how two-pass
+encoding works in <code>libvpx-vp9</code>, why a single-pass approach
+often falls short, and how the encoder utilizes the first-pass data to
+optimize the final video compression.</p>
+<h3 id="the-problem-with-single-pass-vbr">The Problem with Single-Pass
+VBR</h3>
+<p>In a single-pass encoding process, the encoder analyzes and
+compresses the video in real-time, from start to finish. Because it
+cannot see into the future, it must make immediate decisions about how
+many bits to allocate to the current frame.</p>
+<p>This creates a major challenge for variable bitrate (VBR)
+encoding:</p>
+<ul>
+<li><strong>Under-allocation in high-motion scenes:</strong> If a sudden
+high-action scene occurs, a single-pass encoder may not have reserved
+enough bitrate budget, resulting in blockiness and compression
+artifacts.</li>
+<li><strong>Over-allocation in static scenes:</strong> Conversely, the
+encoder might waste bits on simple, static scenes (like talking heads or
+flat backgrounds) because it doesn't know if a highly complex scene is
+coming next.</li>
+<li><strong>Inaccurate target file sizes:</strong> If you have a
+specific target average bitrate, a single-pass encoder can only guess
+how to distribute those bits, often missing the target file size by a
+wide margin.</li>
+</ul>
+<h3 id="how-two-pass-encoding-solves-this">How Two-Pass Encoding Solves
+This</h3>
+<p>Two-pass encoding splits the compression process into two distinct
+stages to eliminate guesswork.</p>
+<h4 id="pass-1-analysis-and-statistics-gathering">Pass 1: Analysis and
+Statistics Gathering</h4>
+<p>During the first pass, the encoder runs through the entire video
+file. It does not generate a playable output video; instead, it analyzes
+the visual characteristics of every frame and writes this data to a log
+file. Specifically, the first pass identifies:</p>
+<ul>
+<li><strong>Scene cuts and keyframe placement:</strong> Where the video
+transitions from one shot to another.</li>
+<li><strong>Motion complexity:</strong> How much movement is occurring
+between frames.</li>
+<li><strong>Detail and texture:</strong> Which areas of the frame are
+highly detailed versus simple.</li>
+</ul>
+<h4 id="pass-2-precision-allocation-and-compression">Pass 2: Precision
+Allocation and Compression</h4>
+<p>In the second pass, the encoder reads the log file generated during
+the first pass. Armed with a complete "map" of the entire video, it
+knows exactly when high-complexity and low-complexity scenes will occur.
+The encoder can now distribute the bitrate budget mathematically:</p>
+<ul>
+<li>It heavily compresses static, low-detail scenes, saving valuable
+bits.</li>
+<li>It allocates those saved bits to high-action, complex scenes.</li>
+<li>It ensures the final file strictly adheres to the requested target
+average bitrate while maximizing overall visual quality.</li>
+</ul>
+<h3 id="why-libvpx-vp9-specifically-demands-two-pass">Why libvpx-vp9
+Specifically Demands Two-Pass</h3>
+<p>While some encoders (like <code>libx264</code> for H.264) have highly
+sophisticated single-pass rate control algorithms like Constant Rate
+Factor (CRF), the <code>libvpx</code> library for VP9 was architected
+with a strong emphasis on two-pass encoding.</p>
+<p>The rate-control algorithms inside <code>libvpx-vp9</code> are
+designed to rely heavily on the global lookahead statistics provided by
+the first pass. Without this global data, the encoder's single-pass VBR
+mode is highly inefficient, often resulting in erratic bitrate spikes
+and subpar visual quality compared to H.264 or HEVC at equivalent
+bitrates.</p>
+<p>If you want to use VP9 to its full potential—achieving high-quality
+video at low bitrates—utilizing the two-pass method is essential.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

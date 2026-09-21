@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why is libvpx-vp9 slower than x264 - libvpx-vp9</title>
+    <meta name="description" content="Video encoders must constantly balance the trade-off between compression efficiency and processing speed. This article explains why the libvpx-vp9 encoder is generally slower at rendering and encoding frames than x264 by examining their architectural dif">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/why-is-libvpx-vp-9-slower-than-x-264">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why is libvpx-vp9 slower than x264 - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/why-is-libvpx-vp-9-slower-than-x-264" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Video encoders must constantly balance the trade-off between compression efficiency and processing speed. This article explains why the libvpx-vp9 encoder is generally slower at rendering and encoding frames than x264 by examining their architectural dif" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="why-is-libvpx-vp9-slower-than-x264">Why is libvpx-vp9 slower
+than x264</h1>
+<p>Video encoders must constantly balance the trade-off between
+compression efficiency and processing speed. This article explains why
+the <code>libvpx-vp9</code> encoder is generally slower at rendering and
+encoding frames than <code>x264</code> by examining their architectural
+differences, algorithmic complexities, and software maturity.</p>
+<h3 id="1-generational-and-algorithmic-complexity">1. Generational and
+Algorithmic Complexity</h3>
+<p>The fundamental reason for the speed difference lies in the
+generational gap between the two video formats. <code>x264</code> is an
+implementation of the H.264 (AVC) standard, which was designed in the
+early 2000s. <code>libvpx-vp9</code> implements the VP9 standard, a
+newer codec designed to compete with H.265 (HEVC) to deliver much higher
+compression efficiency.</p>
+<p>To achieve a 30% to 50% bitrate reduction over H.264 at the same
+visual quality, VP9 introduces massive computational complexity:</p>
+<ul>
+<li><strong>Larger Block Sizes:</strong> H.264 uses a maximum macroblock
+size of 16x16 pixels. VP9 utilizes "superblocks" up to 64x64 pixels,
+which can be recursively partitioned down to 4x4 blocks. Analyzing these
+various partition combinations to find the most efficient layout
+requires exponentially more mathematical calculations.</li>
+<li><strong>More Prediction Modes:</strong> VP9 uses 10 intra-frame
+prediction directions, whereas H.264 uses only 9 for smaller blocks and
+fewer for larger ones. Testing more combinations dramatically increases
+the encoding time.</li>
+<li><strong>Advanced Transform Sizes:</strong> VP9 supports discrete
+cosine transforms (DCT) and asymmetric discrete sine transforms (ADST)
+at various sizes (4x4, 8x8, 16x16, and 32x32), compared to H.264's
+simpler 4x4 and 8x8 DCT transforms.</li>
+</ul>
+<h3 id="2-encoder-optimization-and-maturity">2. Encoder Optimization and
+Maturity</h3>
+<p><code>x264</code> is widely regarded as one of the most highly
+optimized pieces of software in the world. Over nearly two decades,
+developers have hand-written massive amounts of assembly code (using
+AVX, AVX2, and AVX-512 instruction sets) to optimize almost every hot
+path in the encoder. Its heuristic algorithms for deciding which
+encoding paths to skip are incredibly refined, allowing it to discard
+useless calculations almost instantly.</p>
+<p>While <code>libvpx</code> has received significant optimization over
+the years, it has not reached the same level of micro-optimization. The
+search algorithms in <code>libvpx-vp9</code> are naturally heavier, and
+its decision heuristics are more conservative, choosing to spend more
+CPU cycles to guarantee better compression rather than cutting corners
+for speed.</p>
+<h3 id="3-threading-and-parallelization-models">3. Threading and
+Parallelization Models</h3>
+<p>Modern multi-core processors rely heavily on parallel processing to
+speed up video encoding. <code>x264</code> features an incredibly
+efficient frame-level and slice-level multi-threading model. It can look
+ahead at future frames and distribute the workload across dozens of CPU
+threads with very little idle time.</p>
+<p>In contrast, <code>libvpx-vp9</code> relies primarily on tile-based
+and row-based multi-threading. VP9 divides a single frame into
+independent vertical columns called "tiles." While this allows parallel
+processing, scaling the number of tiles too high degrades compression
+efficiency. As a result, <code>libvpx-vp9</code> cannot utilize
+high-core-count CPUs as efficiently as <code>x264</code> without
+sacrificing video quality or compression ratios.</p>
+<h3 id="4-design-philosophy-and-target-use-case">4. Design Philosophy
+and Target Use Case</h3>
+<p>Ultimately, the two encoders were built for different eras and use
+cases:</p>
+<ul>
+<li><strong>x264</strong> was designed for real-time broadcasting,
+low-latency streaming, and consumer-grade hardware playback. Speed and
+low resource usage were primary design requirements.</li>
+<li><strong>libvpx-vp9</strong> was championed by Google to reduce
+bandwidth costs for massive video distribution platforms like YouTube.
+For a platform serving billions of videos daily, spending ten times more
+CPU power during a one-time upload encode is highly cost-effective if it
+saves 30% on data delivery costs to millions of viewers.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

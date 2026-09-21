@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP9 Screen Sharing: Best libvpx Tuning Parameters - libvpx-vp9</title>
+    <meta name="description" content="Optimizing screen content sharing using the VP9 codec requires specific configurations to handle high-contrast text, static backgrounds, and low-latency demands. This article provides a direct guide to the essential libvpx-vp9 tuning parameters, explaini">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/vp-9-screen-sharing-best-libvpx-tuning-parameters">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="VP9 Screen Sharing: Best libvpx Tuning Parameters - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/vp-9-screen-sharing-best-libvpx-tuning-parameters" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Optimizing screen content sharing using the VP9 codec requires specific configurations to handle high-contrast text, static backgrounds, and low-latency demands. This article provides a direct guide to the essential libvpx-vp9 tuning parameters, explaini" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="vp9-screen-sharing-best-libvpx-tuning-parameters">VP9 Screen
+Sharing: Best libvpx Tuning Parameters</h1>
+<p>Optimizing screen content sharing using the VP9 codec requires
+specific configurations to handle high-contrast text, static
+backgrounds, and low-latency demands. This article provides a direct
+guide to the essential <code>libvpx-vp9</code> tuning parameters,
+explaining how to configure speed, quality, rate control, and
+content-specific flags to achieve crisp text rendering and smooth
+performance during real-time screen streaming.</p>
+<h3 id="1-screen-content-mode--tune-screen">1. Screen Content Mode
+(<code>-tune screen</code>)</h3>
+<p>The most critical parameter for screen sharing is the tuning flag.
+When using <code>libvpx</code>, you should set the tune parameter to
+screen content:</p>
+<ul>
+<li><strong>Parameter:</strong> <code>-tune screen</code> (or
+<code>--tune=screens</code> in raw <code>vpxenc</code>)</li>
+</ul>
+<p>This setting optimizes the encoder’s internal heuristics for
+non-photographic content. It enables tools like palette mode and
+intra-block copy, which are highly efficient at compressing solid color
+blocks, sharp UI borders, and static text, resulting in significantly
+sharper text and reduced bandwidth.</p>
+<h3 id="2-real-time-latency-settings">2. Real-Time Latency Settings</h3>
+<p>Screen sharing is typically interactive, meaning encoding latency
+must be minimized. You must configure the encoder to run in real-time
+mode:</p>
+<ul>
+<li><strong>Quality/Deadline:</strong> <code>-quality realtime</code>
+(or <code>--deadline=realtime</code>)</li>
+<li><strong>CPU Used:</strong> <code>-cpu-used 5</code> to
+<code>-cpu-used 8</code></li>
+</ul>
+<p>Setting the quality to <code>realtime</code> forces the encoder to
+prioritize speed. The <code>-cpu-used</code> parameter controls the
+trade-off between CPU usage and video quality. For real-time screen
+sharing, values between 5 and 8 are recommended. Higher values (like 7
+or 8) reduce CPU consumption, which is crucial for preventing system lag
+on the presenter's computer.</p>
+<h3 id="3-rate-control-and-bitrate-allocation">3. Rate Control and
+Bitrate Allocation</h3>
+<p>Screen content alternates between periods of complete stillness
+(reading a slide) and rapid motion (scrolling or video playback).</p>
+<ul>
+<li><strong>Rate Control Mode:</strong> Constant Bitrate (CBR) is
+preferred for real-time streaming to prevent network congestion.</li>
+<li><strong>Static Threshold:</strong>
+<code>-static-thresh &lt;value&gt;</code> (e.g., <code>1000</code>)</li>
+</ul>
+<p>The <code>static-thresh</code> parameter tells the encoder to skip
+encoding blocks that have changed less than the specified threshold. For
+screen sharing, setting a higher static threshold allows the encoder to
+consume almost zero bandwidth when the screen is static, saving
+resources for when actual movement occurs.</p>
+<h3 id="4-keyframe-intervals-and-error-resiliency">4. Keyframe Intervals
+and Error Resiliency</h3>
+<p>In screen sharing, packet loss can corrupt the stream. However,
+inserting frequent keyframes (which are very large) can cause bandwidth
+spikes and lag.</p>
+<ul>
+<li><strong>Keyframe Interval:</strong> <code>-g 3000</code> (or set to
+a very high number)</li>
+<li><strong>Error Resiliency:</strong>
+<code>-error-resilient 1</code></li>
+</ul>
+<p>By setting a high keyframe interval, you rely on the network protocol
+to request keyframes on-demand (PLI/FIR frames) only when packet loss
+occurs. Enabling <code>-error-resilient 1</code> ensures that the loss
+of a packet does not completely destroy the decoding of subsequent
+frames, allowing for faster recovery without needing a full
+keyframe.</p>
+<h3 id="5-multi-threading-and-parallelism">5. Multi-Threading and
+Parallelism</h3>
+<p>High-resolution screen sharing (such as 1080p or 4K) requires
+parallel processing to keep encoding times below the frame budget (e.g.,
+under 33ms for 30 FPS).</p>
+<ul>
+<li><strong>Tile Columns:</strong> <code>-tile-columns 2</code> (or
+<code>3</code> for higher resolutions)</li>
+<li><strong>Tile Rows:</strong> <code>-tile-rows 1</code></li>
+<li><strong>Threads:</strong>
+<code>-threads &lt;number_of_cores&gt;</code></li>
+</ul>
+<p>Splitting the video frame into vertical tiles allows
+<code>libvpx</code> to encode different parts of the screen concurrently
+using multiple CPU threads, drastically reducing encoding latency.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

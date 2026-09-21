@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP9 vs HEVC Licensing Models Explained - libvpx-vp9</title>
+    <meta name="description" content="This article compares the licensing models of the VP9 and HEVC (H.265) video codecs, highlighting the cost, complexity, and administrative differences between them. While VP9 offers an open-source, royalty-free model backed by Google, HEVC relies on a pr">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/vp-9-vs-hevc-licensing-models-explained">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="VP9 vs HEVC Licensing Models Explained - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/vp-9-vs-hevc-licensing-models-explained" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article compares the licensing models of the VP9 and HEVC (H.265) video codecs, highlighting the cost, complexity, and administrative differences between them. While VP9 offers an open-source, royalty-free model backed by Google, HEVC relies on a pr" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="vp9-vs-hevc-licensing-models-explained">VP9 vs HEVC Licensing
+Models Explained</h1>
+<p>This article compares the licensing models of the VP9 and HEVC
+(H.265) video codecs, highlighting the cost, complexity, and
+administrative differences between them. While VP9 offers an
+open-source, royalty-free model backed by Google, HEVC relies on a
+proprietary, multi-pool licensing system that requires substantial
+royalty payments. Understanding these differences is crucial for
+developers, streaming platforms, and hardware manufacturers deciding
+which codec to integrate into their pipelines.</p>
+<h2 id="the-vp9-licensing-model-free-and-open">The VP9 Licensing Model:
+Free and Open</h2>
+<p>VP9 was developed by Google as a royalty-free, open-source video
+coding format. Its licensing model is designed to encourage widespread
+internet adoption without financial barriers.</p>
+<ul>
+<li><strong>Royalty-Free:</strong> Google provides a free, perpetual,
+non-exclusive, royalty-free patent license for any patents it owns that
+are essential to implementing VP9.</li>
+<li><strong>Open Source:</strong> The reference software implementation,
+<code>libvpx-vp9</code>, is distributed under the permissive BSD
+3-Clause License. This allows developers to view, modify, and
+redistribute the source code for both commercial and non-commercial
+projects without paying fees.</li>
+<li><strong>Defense Clause:</strong> To protect the ecosystem, Google's
+patent license includes a termination clause. If a user files a patent
+infringement lawsuit against Google or another VP9 adopter, their VP9
+patent rights are revoked.</li>
+</ul>
+<h2 id="the-hevc-h265-licensing-model-proprietary-and-segmented">The
+HEVC (H.265) Licensing Model: Proprietary and Segmented</h2>
+<p>Unlike VP9, HEVC is a proprietary standard developed jointly by the
+ISO/IEC MPEG and ITU-T. Its licensing model is highly complex,
+expensive, and managed by multiple independent entities.</p>
+<ul>
+<li><strong>Multiple Patent Pools:</strong> No single entity owns all
+HEVC patents. Instead, royalties are collected by several competing
+licensing administrators, primarily MPEG LA (now Via LA) and HEVC
+Advance (Access Advance). Some patent holders, like Velos Media, operate
+independently, requiring licensees to negotiate multiple contracts.</li>
+<li><strong>Accumulative Royalty Fees:</strong> Implementers of HEVC
+must pay royalties on a per-unit basis for hardware devices (such as
+smart TVs, smartphones, and PCs) and, in some cases, software
+players.</li>
+<li><strong>Annual Caps:</strong> While patent pools offer annual caps
+to limit the maximum fees a company pays per year, these caps can still
+reach millions of dollars, making HEVC cost-prohibitive for smaller
+startups and open-source software projects.</li>
+</ul>
+<h2 id="key-differences-at-a-glance">Key Differences at a Glance</h2>
+<h3 id="cost-and-accessibility">Cost and Accessibility</h3>
+<p>VP9 is completely free to use, making it the preferred choice for web
+browsers, open-source media players (like VLC and FFmpeg), and content
+creators. HEVC requires significant financial investment, restricting
+its native support in open-source software.</p>
+<h3 id="licensing-complexity">Licensing Complexity</h3>
+<p>VP9 utilizes a single, unified open-source license. HEVC requires
+navigating a fragmented landscape of multiple patent pools, which has
+historically caused legal uncertainty and delayed market adoption.</p>
+<h3 id="hardware-vs-software-optimization">Hardware vs. Software
+Optimization</h3>
+<p>Because HEVC licensing fees are often absorbed by hardware
+manufacturers, HEVC has achieved widespread hardware acceleration in
+consumer electronics like televisions and mobile processors. VP9,
+supported heavily by Google, achieved dominant software rendering on web
+platforms (such as YouTube) and has since gained broad hardware support
+in modern devices to bypass HEVC licensing costs.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

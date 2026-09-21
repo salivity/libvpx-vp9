@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is VP9 Constant Rate Factor - libvpx-vp9</title>
+    <meta name="description" content="This article explains the Constant Rate Factor (CRF) mode—also known as Constant Quality—in the libvpx-vp9 video encoder. It covers how this rate control mode works, why it is highly efficient for video compression, and the specific commands required">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/what-is-vp-9-constant-rate-factor">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is VP9 Constant Rate Factor - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/what-is-vp-9-constant-rate-factor" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains the Constant Rate Factor (CRF) mode—also known as Constant Quality—in the libvpx-vp9 video encoder. It covers how this rate control mode works, why it is highly efficient for video compression, and the specific commands required" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="what-is-vp9-constant-rate-factor">What is VP9 Constant Rate
+Factor</h1>
+<p>This article explains the Constant Rate Factor (CRF) mode—also known
+as Constant Quality—in the libvpx-vp9 video encoder. It covers how this
+rate control mode works, why it is highly efficient for video
+compression, and the specific commands required to enable it during
+encoding.</p>
+<h2 id="understanding-constant-rate-factor-crf-in-vp9">Understanding
+Constant Rate Factor (CRF) in VP9</h2>
+<p>Constant Rate Factor (CRF) is an encoding mode that targets a
+consistent level of visual quality throughout an entire video. Instead
+of allocating a fixed number of bits per second (as in Constant Bitrate,
+or CBR), CRF adjusts the bitrate dynamically.</p>
+<p>When a video scene is complex—featuring fast motion, high detail, or
+rapid camera transitions—the encoder automatically increases the bitrate
+to prevent compression artifacts. Conversely, during simple scenes with
+static backgrounds or low motion, the encoder lowers the bitrate. This
+ensures that visual quality remains uniform and no bits are wasted on
+scenes that do not require them.</p>
+<h2 id="how-libvpx-vp9-handles-crf">How libvpx-vp9 Handles CRF</h2>
+<p>Unlike other encoders like x264 or x265, the VP9 encoder
+(<code>libvpx-vp9</code>) requires a specific combination of parameters
+to enable true CRF.</p>
+<p>In <code>libvpx-vp9</code>, you must set the target bitrate parameter
+(<code>-b:v</code>) to zero. If you do not set the bitrate to zero, the
+encoder will operate in "Constrained Quality" (CQ) mode instead of pure
+CRF. In CQ mode, the encoder tries to meet the quality target but caps
+the maximum bitrate based on the value specified in
+<code>-b:v</code>.</p>
+<h3 id="the-vp9-crf-scale">The VP9 CRF Scale</h3>
+<p>The CRF scale for VP9 ranges from <strong>0 to 63</strong>:</p>
+<ul>
+<li><strong>0</strong> represents lossless compression (maximum file
+size, perfect quality).</li>
+<li><strong>63</strong> represents the lowest quality (minimum file
+size).</li>
+<li><strong>15 to 35</strong> is the recommended range for most web and
+archival purposes.</li>
+<li><strong>31</strong> is widely considered the default sweet spot for
+1080p video, balancing excellent visual quality with highly efficient
+file sizes. For 4K video, a lower CRF value (around <strong>15 to
+24</strong>) is recommended due to the higher pixel density.</li>
+</ul>
+<h2 id="how-to-use-crf-in-ffmpeg">How to Use CRF in FFmpeg</h2>
+<p>To encode a video using pure CRF with the libvpx-vp9 encoder in
+FFmpeg, use the following command structure:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c:v</span> libvpx-vp9 <span class="at">-crf</span> 30 <span class="at">-b:v</span> 0 <span class="at">-c:a</span> libopus output.webm</span></code></pre></div>
+<p>In this command:</p>
+<ul>
+<li><code>-c:v libvpx-vp9</code> selects the VP9 video encoder.</li>
+<li><code>-crf 30</code> sets the desired quality level to 30.</li>
+<li><code>-b:v 0</code> is mandatory to force the encoder into pure CRF
+mode.</li>
+<li><code>-c:a libopus</code> encodes the audio using the highly
+compatible Opus codec.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

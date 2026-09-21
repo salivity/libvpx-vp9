@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best VP9 cpu-used Value for Real-Time Streaming - libvpx-vp9</title>
+    <meta name="description" content="Selecting the correct cpu-used parameter in the libvpx-vp9 encoder is critical for maintaining stable frame rates and preventing lag during live broadcasts. This article explains the recommended cpu-used values for real-time VP9 streaming, how this setti">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/best-vp-9-cpu-used-value-for-real-time-streaming">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Best VP9 cpu-used Value for Real-Time Streaming - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/best-vp-9-cpu-used-value-for-real-time-streaming" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Selecting the correct cpu-used parameter in the libvpx-vp9 encoder is critical for maintaining stable frame rates and preventing lag during live broadcasts. This article explains the recommended cpu-used values for real-time VP9 streaming, how this setti" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="best-vp9-cpu-used-value-for-real-time-streaming">Best VP9
+cpu-used Value for Real-Time Streaming</h1>
+<p>Selecting the correct <code>cpu-used</code> parameter in the
+<code>libvpx-vp9</code> encoder is critical for maintaining stable frame
+rates and preventing lag during live broadcasts. This article explains
+the recommended <code>cpu-used</code> values for real-time VP9
+streaming, how this setting impacts encoding speed and video quality,
+and how to configure it for optimal performance.</p>
+<h2 id="the-recommended-value-5-to-8">The Recommended Value: 5 to 8</h2>
+<p>For real-time streaming applications (such as WebRTC, live
+interactive broadcasting, or low-latency streaming), the recommended
+<code>cpu-used</code> value is <strong>between 5 and 8</strong>, with
+<strong>6</strong> being the most common sweet spot for modern
+hardware.</p>
+<p>To use these values effectively, you must also set the encoder
+deadline to realtime (using <code>-deadline realtime</code> or
+<code>-quality realtime</code> in FFmpeg).</p>
+<p>Here is how the recommended values perform in practice:</p>
+<ul>
+<li><strong><code>cpu-used=5</code></strong>: Offers the highest visual
+quality possible within the real-time budget. It requires a relatively
+powerful, modern CPU to encode without dropping frames, making it ideal
+for high-end server environments.</li>
+<li><strong><code>cpu-used=6</code></strong>: The industry-standard
+default for real-time VP9 encoding. It provides an excellent balance
+between compression efficiency, visual quality, and CPU
+utilization.</li>
+<li><strong><code>cpu-used=7</code> and
+<code>cpu-used=8</code></strong>: These values prioritize encoding speed
+over quality. They are recommended for resource-constrained systems,
+mobile devices, or high-frame-rate streams (like 1080p at 60fps) where
+the CPU cannot keep up with lower settings.</li>
+</ul>
+<h2 id="why-lower-values-are-unsuitable-for-real-time">Why Lower Values
+are Unsuitable for Real-Time</h2>
+<p>In <code>libvpx-vp9</code>, the <code>cpu-used</code> parameter
+ranges from <code>0</code> to <code>9</code> (when in real-time
+mode).</p>
+<ul>
+<li><strong>Values 0 to 4</strong> prioritize video quality and
+compression efficiency. They require massive computational power and
+will cause the encoder to fall behind the live video source, resulting
+in dropped frames, stuttering, and massive latency.</li>
+<li><strong>Values 5 to 9</strong> trigger optimized, fast-encoding
+algorithms designed specifically to keep encoding times below the
+duration of a single video frame (e.g., under 33 milliseconds for a
+30fps stream).</li>
+</ul>
+<h2 id="recommended-ffmpeg-configuration">Recommended FFmpeg
+Configuration</h2>
+<p>When streaming live using FFmpeg and <code>libvpx-vp9</code>, you
+should pair the <code>cpu-used</code> setting with a constant bitrate
+(CBR) configuration. This prevents bitrate spikes that could congest the
+viewer's network.</p>
+<p>Below is an example of an optimized real-time VP9 encoding
+command:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input_source <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-c:v</span> libvpx-vp9 <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-s</span> 1280x720 <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-b:v</span> 2000k <span class="at">-minrate</span> 2000k <span class="at">-maxrate</span> 2000k <span class="at">-bufsize</span> 1000k <span class="dt">\</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-deadline</span> realtime <span class="dt">\</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-cpu-used</span> 6 <span class="dt">\</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-static-thresh</span> 0 <span class="dt">\</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">-frame-parallel</span> 1 <span class="dt">\</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">-f</span> rtp rtp://destination_address</span></code></pre></div>
+<h3 id="key-parameter-explanations">Key Parameter Explanations:</h3>
+<ul>
+<li><code>-deadline realtime</code>: Forces the encoder to prioritize
+speed to ensure real-time delivery.</li>
+<li><code>-cpu-used 6</code>: Balances CPU load and video quality.</li>
+<li><code>-static-thresh 0</code>: Ensures the encoder does not skip
+blocks, which maintains consistent quality in low-motion scenes.</li>
+<li><code>-frame-parallel 1</code>: Enables parallel frame processing to
+better utilize multi-core CPUs.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

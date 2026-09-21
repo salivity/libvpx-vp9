@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP9 vs AV1: libvpx-vp9 vs libaom-av1 Performance - libvpx-vp9</title>
+    <meta name="description" content="This article compares the current encoding performance of the established libvpx-vp9 encoder against the newer libaom-av1 reference encoder. It analyzes key metrics including compression efficiency, encoding speed, resource consumption, and device compat">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/vp-9-vs-av-1-libvpx-vp-9-vs-libaom-av-1-performance">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="VP9 vs AV1: libvpx-vp9 vs libaom-av1 Performance - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/vp-9-vs-av-1-libvpx-vp-9-vs-libaom-av-1-performance" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article compares the current encoding performance of the established libvpx-vp9 encoder against the newer libaom-av1 reference encoder. It analyzes key metrics including compression efficiency, encoding speed, resource consumption, and device compat" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="vp9-vs-av1-libvpx-vp9-vs-libaom-av1-performance">VP9 vs AV1:
+libvpx-vp9 vs libaom-av1 Performance</h1>
+<p>This article compares the current encoding performance of the
+established <code>libvpx-vp9</code> encoder against the newer
+<code>libaom-av1</code> reference encoder. It analyzes key metrics
+including compression efficiency, encoding speed, resource consumption,
+and device compatibility to help you determine which encoder is best
+suited for your video distribution workflow.</p>
+<h2 id="compression-efficiency">Compression Efficiency</h2>
+<p>The <code>libaom-av1</code> encoder delivers superior compression
+efficiency compared to <code>libvpx-vp9</code>. On average, AV1 achieves
+a 20% to 30% bitrate reduction over VP9 while maintaining the exact same
+visual quality (VMAF/SSIM). This efficiency gap is most noticeable at
+higher resolutions, such as 4K and 8K, and in high-dynamic-range (HDR)
+content, where AV1's advanced coding tools—such as larger block sizes
+(up to 128x128) and improved intra-prediction—can be fully utilized.</p>
+<h2 id="encoding-speed-and-cpu-utilization">Encoding Speed and CPU
+Utilization</h2>
+<p>While <code>libaom-av1</code> wins on compression,
+<code>libvpx-vp9</code> is significantly faster and requires much less
+computational power.</p>
+<ul>
+<li><strong>libvpx-vp9:</strong> This encoder is highly optimized and
+mature. It can easily achieve real-time encoding on modest multi-core
+consumer hardware, making it ideal for live streaming and rapid
+video-on-demand (VOD) processing.</li>
+<li><strong>libaom-av1:</strong> Historically notoriously slow,
+<code>libaom</code> has received massive speed optimizations in recent
+years. Using modern speed presets (e.g., CPU-used 4 to 6), it can now
+achieve reasonable encoding times. However, for high-quality multi-pass
+VOD encoding, <code>libaom-av1</code> still demands up to 2 to 5 times
+more CPU resources and time than <code>libvpx-vp9</code> to achieve its
+optimal compression gains.</li>
+</ul>
+<h2 id="hardware-and-playback-support">Hardware and Playback
+Support</h2>
+<p>Compatibility is a critical differentiator when choosing between
+these two encoders.</p>
+<ul>
+<li><strong>VP9 (libvpx):</strong> VP9 has near-universal hardware
+decoding support. It is supported by almost all modern web browsers
+(including Safari, Chrome, and Firefox), Android devices, smart TVs, and
+older computers. Decoding is computationally lightweight, preserving
+battery life on mobile devices.</li>
+<li><strong>AV1 (libaom):</strong> AV1 hardware decoding support is
+growing rapidly but is not yet universal. It is supported by modern GPUs
+(Nvidia RTX 30/40 series, AMD RX 6000/7000 series, Intel Arc) and newer
+mobile chipsets (Apple A17 Pro/M3 and newer, flagship
+Snapdragon/Dimensity chips). On older devices lacking dedicated hardware
+decoders, AV1 must be decoded via software (using libraries like
+<code>dav1d</code>), which increases CPU usage and battery drain.</li>
+</ul>
+<h2 id="summary-when-to-use-which-encoder">Summary: When to Use Which
+Encoder</h2>
+<ul>
+<li><strong>Choose libvpx-vp9 if:</strong> You require fast encoding
+turnarounds, have limited computational budgets, or need to target older
+legacy devices without consuming excessive battery life during
+playback.</li>
+<li><strong>Choose libaom-av1 if:</strong> Saving bandwidth is your
+highest priority, you are targeting newer playback devices, and you have
+the budget or time for longer, more CPU-intensive encoding passes.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

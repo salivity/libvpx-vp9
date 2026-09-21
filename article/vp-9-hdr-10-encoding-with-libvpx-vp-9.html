@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP9 HDR10 Encoding with libvpx-vp9 - libvpx-vp9</title>
+    <meta name="description" content="To achieve HDR10 compatibility when encoding video using the libvpx-vp9 encoder, you must explicitly signal the SMPTE ST 2084 transfer characteristics alongside correct color primaries and matrix coefficients. This article explains how the VP9 codec and">
+    <link rel="canonical" href="https://salivity.github.io/libvpx-vp9/article/vp-9-hdr-10-encoding-with-libvpx-vp-9">
+    <link rel="search" type="application/opensearchdescription+xml" title="libvpx-vp9" href="/libvpx-vp9/opensearch.xml">
+    <link rel="icon" href="/libvpx-vp9/favicon.ico">
+    <link rel="stylesheet" href="/libvpx-vp9/css/style.css">
+    <link media="print" rel="stylesheet" href="/libvpx-vp9/css/print.css">
+    <script src="/libvpx-vp9/js/fuse.min.js"></script>
+    <script src="/libvpx-vp9/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="VP9 HDR10 Encoding with libvpx-vp9 - libvpx-vp9" />
+    <meta property="og:url" content="https://salivity.github.io/libvpx-vp9/article/vp-9-hdr-10-encoding-with-libvpx-vp-9" />
+    <meta property="og:image" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/libvpx-vp9/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="To achieve HDR10 compatibility when encoding video using the libvpx-vp9 encoder, you must explicitly signal the SMPTE ST 2084 transfer characteristics alongside correct color primaries and matrix coefficients. This article explains how the VP9 codec and" />
+    <link rel="manifest" href="/libvpx-vp9/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/libvpx-vp9/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>libvpx-vp9</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/libvpx-vp9/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="vp9-hdr10-encoding-with-libvpx-vp9">VP9 HDR10 Encoding with
+libvpx-vp9</h1>
+<p>To achieve HDR10 compatibility when encoding video using the
+<code>libvpx-vp9</code> encoder, you must explicitly signal the SMPTE ST
+2084 transfer characteristics alongside correct color primaries and
+matrix coefficients. This article explains how the VP9 codec and the
+WebM/MKV container format store this metadata, and provides the exact
+configuration parameters required to output a compliant HDR10 stream
+using FFmpeg.</p>
+<h2 id="the-hdr10-signaling-mechanism-in-vp9">The HDR10 Signaling
+Mechanism in VP9</h2>
+<p>HDR10 relies on specific color parameters to tell the display how to
+render high-dynamic-range content. For VP9, this signaling happens at
+two levels: the <strong>VP9 bitstream</strong> (within the sequence
+header) and the <strong>container level</strong> (typically WebM or
+Matroska).</p>
+<p>To define HDR10, three main video signal parameters must be set to
+specific values:</p>
+<ol type="1">
+<li><strong>Color Primaries:</strong> BT.2020 (Value:
+<code>9</code>)</li>
+<li><strong>Transfer Characteristics:</strong> SMPTE ST 2084 / PQ
+(Value: <code>16</code>)</li>
+<li><strong>Matrix Coefficients:</strong> BT.2020 non-constant luminance
+(Value: <code>9</code>)</li>
+</ol>
+<p>The <code>libvpx-vp9</code> encoder exposes controls to inject these
+values directly into the VP9 uncompressed frame headers via the
+<code>color_config()</code> syntax element.</p>
+<p>Additionally, HDR10 requires 10-bit color depth. In VP9, 10-bit depth
+is only supported in <strong>Profile 2</strong> (for YUV 4:2:0) or
+<strong>Profile 3</strong> (for YUV 4:2:2 or 4:4:4). Therefore, you must
+force the encoder to use Profile 2 to enable 10-bit color
+representation.</p>
+<h2 id="configuring-ffmpeg-for-libvpx-vp9-hdr10">Configuring FFmpeg for
+libvpx-vp9 HDR10</h2>
+<p>When using FFmpeg to encode with <code>libvpx-vp9</code>, you must
+pass the appropriate color space and profile flags to ensure the encoder
+signals SMPTE ST 2084 correctly.</p>
+<p>Below is the standard configuration command:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input_hdr.mkv <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-c:v</span> libvpx-vp9 <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-profile:v</span> 2 <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-pix_fmt</span> yuv420p10le <span class="dt">\</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-color_primaries</span> bt2020 <span class="dt">\</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-color_trc</span> smpte2084 <span class="dt">\</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-colorspace</span> bt2020nc <span class="dt">\</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">-color_range</span> tv <span class="dt">\</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  output_hdr.webm</span></code></pre></div>
+<h3 id="parameter-breakdown">Parameter Breakdown</h3>
+<ul>
+<li><strong><code>-profile:v 2</code></strong>: Forces VP9 Profile 2,
+which is required for 10-bit color depth.</li>
+<li><strong><code>-pix_fmt yuv420p10le</code></strong>: Sets the pixel
+format to 10-bit YUV 4:2:0.</li>
+<li><strong><code>-color_primaries bt2020</code></strong>: Signals the
+BT.2020 wide color gamut.</li>
+<li><strong><code>-color_trc smpte2084</code></strong>: Signals the
+SMPTE ST 2084 (PQ) transfer function, which defines the
+high-dynamic-range luminance curves.</li>
+<li><strong><code>-colorspace bt2020nc</code></strong>: Sets the matrix
+coefficients to BT.2020 non-constant luminance to convert RGB to
+YUV.</li>
+<li><strong><code>-color_range tv</code></strong>: Signals limited range
+(16-235 for 8-bit equivalent, 64-940 for 10-bit), which is standard for
+HDR10 distribution.</li>
+</ul>
+<h2 id="mastering-display-metadata-and-cll">Mastering Display Metadata
+and CLL</h2>
+<p>While the transfer characteristics and primaries define the color
+space, HDR10 also requires static metadata to describe the mastering
+display and content light levels. This includes:</p>
+<ul>
+<li><strong>Mastering Display Color Volume (MDCV):</strong> The color
+primaries, white point, and luminance range of the monitor used to
+master the video.</li>
+<li><strong>Content Light Level (CLL):</strong> The Maximum Content
+Light Level (MaxCLL) and Maximum Frame-Average Light Level
+(MaxFALL).</li>
+</ul>
+<p>In a WebM/VP9 workflow, these values are typically written into the
+container metadata block rather than the raw VP9 video bitstream. When
+you pass a source file containing this metadata through FFmpeg, it will
+automatically extract and map the MKV/WebM side data elements (such as
+<code>MasteringDisplayMetadata</code> and
+<code>ContentLightLevel</code>) into the output container, completing
+the HDR10 compatibility requirements.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/libvpx-vp9'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/libvpx-vp9/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/libvpx-vp9/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>
